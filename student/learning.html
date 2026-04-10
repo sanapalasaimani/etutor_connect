@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Center | ETutorConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            border-radius: 0 !important;
+        }
+    </style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .module-item.active { background-color: #ecfdf5; border-color: #10b981; }
+        .glass-header { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.8); }
+        .bg-player { background: #000; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+    </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-800">
+    <!-- Top Nav -->
+    <header class="glass-header border-b border-gray-100 px-8 py-4 flex justify-between items-center h-20 sticky top-0 z-[100]">
+        <div class="flex items-center gap-6">
+            <button onclick="location.href='index.html'" class="w-10 h-10 rounded-2xl bg-white border flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:border-emerald-200 transition shadow-sm">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+            <div>
+                <h1 id="player-course-title" class="text-lg font-black text-gray-900 leading-tight">Loading Course...</h1>
+                <p id="current-lesson-title" class="text-[11px] font-bold text-emerald-600 uppercase tracking-widest mt-0.5">Welcome Back</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-8">
+            <div class="hidden md:block w-48">
+                <div class="flex justify-between items-center mb-1.5">
+                    <span class="text-[9px] font-black text-gray-400 uppercase">Your Progress</span>
+                    <span id="progress-percent" class="text-[9px] font-black text-emerald-600 uppercase">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 h-1 rounded-full overflow-hidden">
+                    <div id="player-progress-bar" class="bg-emerald-500 h-full transition-all duration-700" style="width: 0%"></div>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="p-8 max-w-[1600px] mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Side: Video Player (Scaler Style) -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="relative pt-[56.25%] bg-black rounded-[40px] overflow-hidden shadow-2xl border-4 border-white" id="video-container">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-white/20 bg-emerald-950/10">
+                        <i data-lucide="play-circle" class="w-20 h-20 opacity-10 mb-4"></i>
+                        <p class="font-black uppercase tracking-[0.2em] text-sm opacity-10">Select a lesson to begin</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[40px] p-10 border border-gray-100 shadow-sm">
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <span id="current-lesson-tag" class="text-[10px] font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full uppercase tracking-widest border border-emerald-100">Module 01</span>
+                            <h2 id="lesson-header-title" class="text-2xl font-black text-gray-900 mt-4">Lesson Introduction</h2>
+                        </div>
+                        <div class="flex gap-3">
+                            <button id="mark-complete-btn" class="p-3 rounded-2xl bg-gray-50 text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 transition border border-gray-100">
+                                <i data-lucide="check-circle" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-8 border-t border-gray-50">
+                        <!-- Dedicated Video Link Section -->
+                        <div class="p-6 rounded-3xl bg-emerald-50/50 border border-emerald-100 group">
+                            <h4 class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-3">Primary Video Link</h4>
+                            <div id="video-link-container" class="flex items-center justify-between">
+                                <p class="text-xs text-gray-400 italic">No video selected</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Dedicated Materials Section -->
+                        <div class="p-6 rounded-3xl bg-blue-50/50 border border-blue-100 group">
+                            <h4 class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-3">Lesson Materials</h4>
+                            <div id="materials-link-container" class="flex items-center justify-between">
+                                <p class="text-xs text-gray-400 italic">No resources available</p>
+                            </div>
+                        </div>
+
+                        <!-- Dedicated Quiz Section -->
+                        <div id="quiz-section-container" class="p-6 bg-purple-50/50 border border-purple-100 group hidden">
+                            <h4 class="text-[10px] font-black text-purple-600 uppercase tracking-widest mb-3">Module Quiz</h4>
+                            <div id="quiz-link-container" class="flex items-center justify-between">
+                                <button onclick="window.openQuizModal()" class="flex items-center gap-2 text-xs font-black text-purple-600 hover:text-purple-700 transition">
+                                    <span>Take Module Quiz</span>
+                                    <i data-lucide="help-circle" class="w-3 h-3"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-10">
+                        <h4 class="text-sm font-black text-gray-900 mb-4">Description</h4>
+                        <div id="lesson-description" class="text-sm text-gray-500 leading-relaxed font-medium">
+                            Select a module from the curriculum to view its description and resources.
+                        </div>
+                    </div>
+
+                    <div class="mt-10 pb-20">
+                        <div class="flex items-center gap-3 mb-6">
+                            <h4 class="text-sm font-black text-gray-900">Discussion & Comments</h4>
+                            <span id="comment-count" class="bg-gray-100 text-gray-500 px-2 py-0.5 text-[10px] font-bold">0</span>
+                        </div>
+                        
+                        <!-- Post Comment -->
+                        <div class="mb-8 border border-gray-100 p-6 bg-white">
+                            <textarea id="comment-input" placeholder="Have a question or want to share a thought?" class="w-full p-4 border border-gray-100 outline-none focus:border-emerald-500 text-sm mb-4 resize-none h-24 transition"></textarea>
+                            <div class="flex justify-end">
+                                <button id="post-comment-btn" class="bg-gray-900 text-white px-8 py-3 text-xs font-black hover:bg-emerald-600 transition shadow-lg shadow-gray-200">
+                                    Post Comment
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Comment List -->
+                        <div id="comment-list" class="space-y-6">
+                            <!-- Comments go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Course Curriculum -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-12rem)] sticky top-28">
+                    <div class="p-8 border-b bg-gray-50/50">
+                        <h3 class="text-lg font-black text-gray-900">Course Curriculum</h3>
+                        <p id="module-count" class="text-[11px] font-bold text-gray-400 mt-1 uppercase">0 Modules</p>
+                    </div>
+                    <div id="module-list" class="flex-1 overflow-y-auto p-6 space-y-4">
+                        <!-- Curriculum items -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal-overlay" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[150] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-[40px] shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn">
+            <div class="p-8 pb-4 flex justify-between items-center border-b border-gray-50">
+                <div>
+                    <h3 class="text-2xl font-black text-gray-900" id="quiz-modal-title">Module Quiz</h3>
+                    <p class="text-[10px] font-bold text-purple-600 uppercase tracking-widest mt-1">Pass score: 60%</p>
+                </div>
+                <button onclick="window.closeQuizModal()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-900 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-10 overflow-y-auto flex-1 bg-gray-50/30" id="quiz-questions-container">
+                <!-- Quiz questions -->
+            </div>
+            <div class="p-8 border-t border-gray-100 bg-white flex justify-between items-center">
+                <p class="text-xs text-gray-400 font-bold" id="quiz-progress-text">All questions are mandatory</p>
+                <button id="submit-quiz-btn" class="bg-purple-600 text-white px-10 py-4 text-xs font-black hover:bg-purple-700 transition shadow-lg shadow-purple-100">
+                    Submit Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="learning-view.js"></script>
+</body>
+</html>

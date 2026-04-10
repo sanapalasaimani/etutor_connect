@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Learning Hub | E-Tutor Connect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased overflow-hidden font-sans">
+    
+    <div class="sidebar-layout h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="bg-white border-r border-gray-100 flex flex-col h-full shadow-sm">
+            <div class="p-6 border-b border-gray-50 flex items-center justify-between">
+                <span class="text-xl font-black tracking-tight">E-Tutor <span class="text-emerald-500 italic">Connect</span></span>
+            </div>
+            
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <button class="nav-link active w-full flex items-center gap-3 p-3.5 rounded-2xl font-semibold text-[15px]" data-target="section-explore">
+                    <i data-lucide="compass" class="w-5 h-5"></i>
+                    <span>Explore Courses</span>
+                </button>
+                <button class="nav-link w-full flex items-center gap-3 p-3.5 rounded-2xl font-semibold text-[15px] text-gray-500 hover:bg-gray-50 transition" data-target="section-learning">
+                    <i data-lucide="play-circle" class="w-5 h-5"></i>
+                    <span>My Learning</span>
+                </button>
+                <button class="nav-link w-full flex items-center gap-3 p-3.5 rounded-2xl font-semibold text-[15px] text-gray-500 hover:bg-gray-50 transition" data-target="section-sessions">
+                    <i data-lucide="video" class="w-5 h-5"></i>
+                    <span>Live Sessions</span>
+                </button>
+                <button class="nav-link w-full flex items-center gap-3 p-3.5 rounded-2xl font-semibold text-[15px] text-gray-500 hover:bg-gray-50 transition" data-target="section-achievements">
+                    <i data-lucide="award" class="w-5 h-5"></i>
+                    <span>Achievements</span>
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-gray-50 bg-gray-50/30">
+                <button id="logout-btn" class="flex items-center gap-3 w-full bg-red-50 text-red-600 p-3.5 rounded-2xl hover:bg-red-100 transition font-bold text-sm">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="flex flex-col h-full overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white border-b border-gray-100 px-8 py-4 flex justify-between items-center shrink-0">
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight" id="header-title">Explore Courses</h1>
+                    <p class="text-gray-400 text-xs mt-0.5" id="header-subtitle">Discover top-rated courses and expert tutors</p>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-sm font-bold m-0 leading-none" id="student-name">Loading...</p>
+                            <p class="text-[10px] text-gray-400 font-medium mt-1" id="student-email">student@example.com</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center border-2 border-emerald-200" id="student-initials">
+                            S
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto p-8" id="section-container">
+                
+                <!-- Explore Section -->
+                <div id="section-explore" class="section-view animate-fadeIn">
+                    <div class="flex flex-col md:flex-row gap-4 mb-8">
+                        <div class="flex-1 relative">
+                            <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="course-search" placeholder="Search for AI, React, UI/UX..." class="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-100 rounded-[20px] shadow-sm outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+                        </div>
+                        <select id="course-filter" class="px-6 py-3.5 bg-white border border-gray-100 rounded-[20px] shadow-sm outline-none font-medium text-gray-600">
+                            <option value="all">All Learning Types</option>
+                            <option value="Self-Paced">Self-Paced Video</option>
+                            <option value="Live-Cohort">Live Cohorts</option>
+                        </select>
+                    </div>
+
+                    <div id="explore-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- My Learning Section -->
+                <div id="section-learning" class="section-view hidden animate-fadeIn">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="learning-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Sessions Section -->
+                <div id="section-sessions" class="section-view hidden animate-fadeIn">
+                    <div class="bg-white border border-gray-100 rounded-[32px] p-8 shadow-sm">
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="text-xl font-bold">1-on-1 Live Sessions</h3>
+                            <p class="text-sm text-gray-400">Book extra help from top tutors</p>
+                        </div>
+                        <div id="tutor-booking-list" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Achievements Section -->
+                <div id="section-achievements" class="section-view hidden animate-fadeIn">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="achievements-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal-overlay" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-md overflow-hidden animate-fadeIn">
+            <div class="p-8 pb-4 flex justify-between items-center">
+                <h3 class="text-2xl font-bold">Book Slot</h3>
+                <button onclick="closeBookingModal()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-900 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-8 pt-2">
+                <div id="modal-tutor-profile" class="flex items-center gap-4 mb-8 bg-emerald-50/50 p-4 rounded-3xl border border-emerald-100/50">
+                    <div class="w-12 h-12 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-xl">T</div>
+                    <div>
+                        <p class="font-bold text-emerald-900 leading-none">Tutor Name</p>
+                        <span class="text-xs text-emerald-600 font-medium tracking-tight">Expert AI Instructor</span>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">Choose your timing</label>
+                        <div id="modal-slots-grid" class="grid grid-cols-2 gap-3">
+                            <!-- Slots -->
+                        </div>
+                    </div>
+                    <div class="pt-4">
+                        <button id="confirm-booking-btn" class="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl hover:bg-black shadow-lg transition disabled:opacity-50">
+                            Confirm Booking
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

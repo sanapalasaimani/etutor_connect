@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Tutor Connect</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-white text-gray-800 antialiased font-sans">
+
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-20">
+        <!-- Logo -->
+        <div class="flex items-center gap-2 cursor-pointer">
+          <div class="bg-primary-500 p-2 rounded-xl text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+              <path d="M6 12v5c3 3 9 3 12 0v-5" />
+            </svg>
+          </div>
+          <span class="text-xl font-bold text-gray-900">E-Tutor <span class="text-primary-500">Connect</span></span>
+        </div>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex flex-1 justify-center items-center space-x-8">
+          <a href="#" class="text-gray-900 font-medium hover:text-primary-500 transition">Home</a>
+          <a href="#" class="text-gray-500 font-medium hover:text-primary-500 transition">Find Tutors</a>
+          <a href="#" class="text-gray-500 font-medium hover:text-primary-500 transition">Categories</a>
+          <a href="#" class="text-gray-500 font-medium hover:text-primary-500 transition">Pricing</a>
+        </div>
+
+        <!-- CTA Buttons (Reactive) -->
+        <div id="auth-cta" class="hidden md:flex items-center space-x-4">
+          <a href="/login.html" class="text-gray-700 font-medium hover:text-primary-500 transition px-4 py-2">Log In</a>
+          <a href="/signup.html" class="bg-primary-500 hover:bg-primary-600 text-white font-medium px-6 py-2.5 rounded-lg transition shadow-sm hover:shadow-md">Sign Up Free</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js'
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        const authCta = document.getElementById('auth-cta');
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+            authCta.innerHTML = `
+                <a href="/login.html" class="bg-primary-500 hover:bg-primary-600 text-white font-medium px-6 py-2.5 rounded-lg transition shadow-sm hover:shadow-md">Go to Dashboard</a>
+                <button id="main-logout" class="text-gray-500 hover:text-red-500 text-sm font-medium">Logout</button>
+            `;
+            document.getElementById('main-logout').addEventListener('click', async () => {
+                await supabase.auth.signOut();
+                window.location.reload();
+            });
+        }
+        authCta.classList.remove('hidden');
+    });
+  </script>
+
+  <main>
+    <!-- Hero Section -->
+    <section
+      class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-8">
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 text-primary-700 font-medium text-sm">
+          <span class="w-2 h-2 rounded-full bg-primary-500"></span>
+          Trusted by 10,000+ Students
+        </div>
+
+        <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight tracking-tight">
+          Learn from the <br />
+          <span class="text-primary-500">Best Tutors</span> <br />
+          Online
+        </h1>
+
+        <p class="text-lg text-gray-600 max-w-lg leading-relaxed">
+          Connect with verified expert tutors for personalized 1-on-1 sessions. From Math to Coding — find your perfect
+          tutor today.
+        </p>
+
+        <div class="relative max-w-md">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+              fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                clip-rule="evenodd" />
+            </svg>
+          </div>
+          <input type="text" placeholder="What do you want to learn?"
+            class="block w-full pl-11 pr-32 py-4 border border-gray-200 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm shadow-sm transition">
+          <div class="absolute inset-y-0 right-2 flex items-center">
+            <button
+              class="bg-primary-500 hover:bg-primary-600 text-white font-medium px-6 py-2 rounded-lg transition shadow-sm">Search</button>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-8 pt-4">
+          <div class="flex items-center gap-3">
+            <div class="bg-primary-50 p-3 rounded-lg text-primary-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </div>
+            <div>
+              <div class="font-bold text-gray-900 text-lg">500+</div>
+              <div class="text-sm text-gray-500">Expert Tutors</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="bg-primary-50 p-3 rounded-lg text-primary-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+            </div>
+            <div>
+              <div class="font-bold text-gray-900 text-lg">50+</div>
+              <div class="text-sm text-gray-500">Subjects</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="bg-primary-50 p-3 rounded-lg text-primary-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </div>
+            <div>
+              <div class="font-bold text-gray-900 text-lg">4.9/5</div>
+              <div class="text-sm text-gray-500">Avg Rating</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="relative hidden lg:block h-[600px] w-full bg-primary-50 rounded-3xl overflow-hidden self-stretch">
+        <!-- Decorative image placeholder matching reference aesthetic -->
+        <img class="object-cover w-full h-full"
+          src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+          alt="Student learning online">
+
+        <!-- Floating element simulating UI -->
+        <div class="absolute bottom-10 left-10 bg-white p-4 rounded-xl shadow-xl flex items-center gap-4 animate-bounce"
+          style="animation-duration: 3s;">
+          <div class="bg-green-100 p-2 rounded-full text-green-600">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+          </div>
+          <div>
+            <div class="text-sm font-bold text-gray-800">Session Booked</div>
+            <div class="text-xs text-gray-500">Tomorrow at 10:00 AM</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="py-20 bg-gray-50 border-t border-gray-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h3 class="text-primary-600 font-bold uppercase tracking-wider text-sm mb-2">Browse Subjects</h3>
+          <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Explore Course Categories</h2>
+          <p class="text-gray-600 font-medium">Choose from 50+ subjects and find the perfect tutor to help you excel</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <!-- Math -->
+          <a href="#"
+            class="bg-white rounded-2xl p-8 text-center border border-gray-100 hover:border-primary-100 hover:shadow-lg transition-all group">
+            <div
+              class="w-16 h-16 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="16" height="20" x="4" y="2" rx="2" />
+                <line x1="8" x2="16" y1="6" y2="6" />
+                <line x1="16" x2="16" y1="14" y2="18" />
+                <path d="M16 10h.01" />
+                <path d="M12 10h.01" />
+                <path d="M8 10h.01" />
+                <path d="M12 14h.01" />
+                <path d="M8 14h.01" />
+                <path d="M12 18h.01" />
+                <path d="M8 18h.01" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg mb-1">Mathematics</h4>
+            <p class="text-gray-500 text-sm">120+ Tutors</p>
+          </a>
+          <!-- Science -->
+          <a href="#"
+            class="bg-white rounded-2xl p-8 text-center border border-gray-100 hover:border-primary-100 hover:shadow-lg transition-all group">
+            <div
+              class="w-16 h-16 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 2v7.31" />
+                <path d="M14 9.3V1.99" />
+                <path d="M8.5 2h7" />
+                <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                <line x1="5.52" x2="18.48" y1="16" y2="16" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg mb-1">Science</h4>
+            <p class="text-gray-500 text-sm">95+ Tutors</p>
+          </a>
+          <!-- Coding -->
+          <a href="#"
+            class="bg-white rounded-2xl p-8 text-center border border-gray-100 hover:border-primary-100 hover:shadow-lg transition-all group">
+            <div
+              class="w-16 h-16 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6" />
+                <polyline points="8 6 2 12 8 18" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg mb-1">Coding</h4>
+            <p class="text-gray-500 text-sm">150+ Tutors</p>
+          </a>
+          <!-- Languages -->
+          <a href="#"
+            class="bg-white rounded-2xl p-8 text-center border border-gray-100 hover:border-primary-100 hover:shadow-lg transition-all group">
+            <div
+              class="w-16 h-16 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" x2="22" y1="12" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg mb-1">Languages</h4>
+            <p class="text-gray-500 text-sm">80+ Tutors</p>
+          </a>
+          <!-- Music -->
+          <a href="#"
+            class="bg-white rounded-2xl p-8 text-center border border-gray-100 hover:border-primary-100 hover:shadow-lg transition-all group">
+            <div
+              class="w-16 h-16 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18V5l12-2v13" />
+                <circle cx="6" cy="18" r="3" />
+                <circle cx="18" cy="16" r="3" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg mb-1">Music</h4>
+            <p class="text-gray-500 text-sm">45+ Tutors</p>
+          </a>
+          <!-- Arts -->
+          <a href="#"
+            class="bg-white rounded-2xl p-8 text-center border border-gray-100 hover:border-primary-100 hover:shadow-lg transition-all group">
+            <div
+              class="w-16 h-16 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m5 16-1-4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2l-1 4" />
+                <path d="M8 22s-2-2-2-6V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10c0 4-2 6-2 6" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg mb-1">Arts</h4>
+            <p class="text-gray-500 text-sm">60+ Tutors</p>
+          </a>
+          <!-- Literature -->
+          <a href="#"
+            class="bg-white rounded-2xl p-8 text-center border border-gray-100 hover:border-primary-100 hover:shadow-lg transition-all group">
+            <div
+              class="w-16 h-16 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg mb-1">Literature</h4>
+            <p class="text-gray-500 text-sm">70+ Tutors</p>
+          </a>
+          <!-- Physics -->
+          <a href="#"
+            class="bg-white rounded-2xl p-8 text-center border border-gray-100 hover:border-primary-100 hover:shadow-lg transition-all group">
+            <div
+              class="w-16 h-16 mx-auto bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-6 group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="2" />
+                <path
+                  d="M21.1 10.3a5.2 5.2 0 0 0-4.3-1.6c-1.3.2-2.3 0-3.3-.8a5.2 5.2 0 0 0-7 1.1A4.9 4.9 0 0 0 6 12a4.9 4.9 0 0 0 .5 3 5.2 5.2 0 0 0 7 1.1c1-.8 2-1 3.3-.8a5.2 5.2 0 0 0 4.3-1.6 4.9 4.9 0 0 0-.5-6z" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg mb-1">Physics</h4>
+            <p class="text-gray-500 text-sm">85+ Tutors</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Tutors Section -->
+    <section class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-end mb-12">
+          <div>
+            <h3 class="text-primary-600 font-bold uppercase tracking-wider text-sm mb-2">Top Rated</h3>
+            <h2 class="text-4xl font-extrabold text-gray-900">Featured Tutors</h2>
+            <p class="text-gray-600 mt-2">Verified experts ready to help you learn</p>
+          </div>
+          <button
+            class="bg-white text-gray-800 border border-gray-200 hover:border-gray-300 font-medium px-6 py-2.5 rounded-lg transition shadow-sm hover:shadow">View
+            All Tutors</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Tutor 1 -->
+          <div
+            class="border border-gray-100 shadow-sm hover:shadow-md transition rounded-2xl p-6 bg-white flex flex-col h-full">
+            <div class="flex justify-between items-start mb-6">
+              <div
+                class="w-16 h-16 rounded-2xl bg-primary-50 text-primary-700 font-bold text-xl flex items-center justify-center">
+                PS</div>
+              <div
+                class="flex items-center text-primary-600 font-medium text-sm gap-1 bg-primary-50 px-3 py-1 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                Verified
+              </div>
+            </div>
+
+            <h4 class="font-bold text-xl text-gray-900">Dr. Priya Sharma</h4>
+            <p class="text-primary-600 font-medium text-sm mb-3">Mathematics</p>
+
+            <div class="flex items-center text-sm text-gray-500 mb-2 gap-4">
+              <div class="flex items-center gap-1">
+                <svg class="text-yellow-400 w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                    clip-rule="evenodd" />
+                </svg>
+                <span>4.9 (234)</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span>8 years</span>
+              </div>
+            </div>
+
+            <div class="flex items-center text-sm text-gray-500 mb-6 gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span>Mumbai</span>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-8">
+              <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full font-medium">Calculus</span>
+              <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full font-medium">Algebra</span>
+              <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full font-medium">Statistics</span>
+            </div>
+
+            <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-100">
+              <div class="font-bold text-gray-900 text-xl">₹500<span
+                  class="text-sm font-normal text-gray-500">/hr</span></div>
+              <button
+                class="bg-primary-500 hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-lg transition shadow-sm">Book
+                Now</button>
+            </div>
+          </div>
+
+          <!-- Tutor 2 -->
+          <div
+            class="border border-gray-100 shadow-sm hover:shadow-md transition rounded-2xl p-6 bg-white flex flex-col h-full">
+            <div class="flex justify-between items-start mb-6">
+              <div
+                class="w-16 h-16 rounded-2xl bg-primary-50 text-primary-700 font-bold text-xl flex items-center justify-center">
+                RV</div>
+              <div
+                class="flex items-center text-primary-600 font-medium text-sm gap-1 bg-primary-50 px-3 py-1 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                Verified
+              </div>
+            </div>
+
+            <h4 class="font-bold text-xl text-gray-900">Rahul Verma</h4>
+            <p class="text-primary-600 font-medium text-sm mb-3">Computer Science</p>
+
+            <div class="flex items-center text-sm text-gray-500 mb-2 gap-4">
+              <div class="flex items-center gap-1">
+                <svg class="text-yellow-400 w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                    clip-rule="evenodd" />
+                </svg>
+                <span>4.8 (189)</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span>5 years</span>
+              </div>
+            </div>
+
+            <div class="flex items-center text-sm text-gray-500 mb-6 gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span>Bangalore</span>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-8">
+              <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full font-medium">Python</span>
+              <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full font-medium">DSA</span>
+              <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full font-medium">Web Dev</span>
+            </div>
+
+            <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-100">
+              <div class="font-bold text-gray-900 text-xl">₹600<span
+                  class="text-sm font-normal text-gray-500">/hr</span></div>
+              <button
+                class="bg-primary-500 hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-lg transition shadow-sm">Book
+                Now</button>
+            </div>
+          </div>
+
+          <!-- More tutors could be dynamically injected here... Add an empty placeholder to match columns -->
+          <div
+            class="hidden lg:flex border border-dashed border-gray-200 rounded-2xl p-6 bg-gray-50 flex-col items-center justify-center text-center h-full">
+            <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center text-gray-400 mb-4 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="M12 5v14" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-700">Find More Tutors</h4>
+            <p class="text-gray-500 text-sm mt-2">Explore our extensive list of over 500+ verified mentors across
+              various categories.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Testimonials -->
+    <section class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h3 class="text-primary-600 font-bold uppercase tracking-wider text-sm mb-2">Testimonials</h3>
+          <h2 class="text-4xl font-extrabold text-gray-900">What Students Say</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-gray-50 border border-gray-100 rounded-2xl p-8 hover:shadow-lg transition">
+            <svg class="w-10 h-10 text-primary-200 mb-6" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true">
+              <path
+                d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z" />
+            </svg>
+            <p class="text-gray-700 text-lg mb-6 leading-relaxed">"E-Tutor Connect helped me find an amazing physics
+              tutor. My scores improved by 40% in just 3 months!"</p>
+            <div class="flex items-center text-primary-500 mb-6 gap-1">
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="border-t border-gray-200 pt-6 flex items-center gap-4">
+              <div
+                class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold">
+                AP</div>
+              <div>
+                <h5 class="font-bold text-gray-900">Arjun Patel</h5>
+                <p class="text-sm text-gray-500">JEE Aspirant</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 border border-gray-100 rounded-2xl p-8 hover:shadow-lg transition">
+            <svg class="w-10 h-10 text-primary-200 mb-6" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true">
+              <path
+                d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z" />
+            </svg>
+            <p class="text-gray-700 text-lg mb-6 leading-relaxed">"The booking system is so smooth. I love how I can
+              read reviews before choosing a tutor. Highly recommended!"</p>
+            <div class="flex items-center text-primary-500 mb-6 gap-1">
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="border-t border-gray-200 pt-6 flex items-center gap-4">
+              <div
+                class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold">
+                SR</div>
+              <div>
+                <h5 class="font-bold text-gray-900">Sneha Reddy</h5>
+                <p class="text-sm text-gray-500">College Student</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 border border-gray-100 rounded-2xl p-8 hover:shadow-lg transition">
+            <svg class="w-10 h-10 text-primary-200 mb-6" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true">
+              <path
+                d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z" />
+            </svg>
+            <p class="text-gray-700 text-lg mb-6 leading-relaxed">"Learning Python from scratch was easy with the expert
+              tutors here. The 1-on-1 sessions are incredibly effective."</p>
+            <div class="flex items-center text-primary-500 mb-6 gap-1">
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="border-t border-gray-200 pt-6 flex items-center gap-4">
+              <div
+                class="w-12 h-12 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold">
+                KM</div>
+              <div>
+                <h5 class="font-bold text-gray-900">Karan Mehta</h5>
+                <p class="text-sm text-gray-500">Working Professional</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Placeholder to make it complete -->
+    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="col-span-1 md:col-span-2">
+          <div class="flex items-center gap-2 mb-4 justify-center md:justify-start">
+            <div class="bg-primary-500 p-2 rounded-xl text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                <path d="M6 12v5c3 3 9 3 12 0v-5" />
+              </svg>
+            </div>
+            <span class="text-xl font-bold text-white">E-Tutor <span class="text-primary-500">Connect</span></span>
+          </div>
+          <p class="text-gray-400 max-w-sm mx-auto md:mx-0">Elevating learning through connection. Discover tailored
+            tutoring sessions that propel your education forward.</p>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li><a href="#" class="hover:text-primary-400 transition">About Us</a></li>
+            <li><a href="#" class="hover:text-primary-400 transition">Find a Tutor</a></li>
+            <li><a href="#" class="hover:text-primary-400 transition">Become a Tutor</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-4">Support</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li><a href="#" class="hover:text-primary-400 transition">FAQ</a></li>
+            <li><a href="#" class="hover:text-primary-400 transition">Contact Us</a></li>
+            <li><a href="#" class="hover:text-primary-400 transition">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+        &copy; 2026 E-Tutor Connect. All rights reserved.
+      </div>
+    </footer>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

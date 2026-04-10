@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - E-Tutor Connect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-gray-50 text-gray-800 antialiased font-sans flex items-center justify-center min-h-screen p-4 sm:p-6 text-sm">
+    
+    <div class="max-w-2xl w-full bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <!-- Header -->
+      <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Create an account</h1>
+            <p class="text-gray-500 mt-1">Start your learning journey today.</p>
+        </div>
+        <a href="/" class="flex items-center gap-2 cursor-pointer">
+          <div class="bg-primary-500 p-2 rounded-xl text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          </div>
+        </a>
+      </div>
+
+      <div class="p-8 h-[calc(100vh-140px)] sm:h-auto overflow-y-auto custom-scrollbar">
+        <form id="signup-form" class="space-y-6">
+          <div id="error-message" class="hidden bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-100"></div>
+
+          <!-- LEVEL 1 FIELDS: CORE FOR EVERYONE -->
+          <div class="space-y-4">
+              <h3 class="text-sm font-semibold text-gray-900 border-b pb-2 uppercase tracking-wide">1. Basic Information</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                  <input type="text" id="first_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition" placeholder="John">
+                </div>
+                <div>
+                  <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                  <input type="text" id="last_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition" placeholder="Doe">
+                </div>
+              </div>
+
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                <input type="email" id="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition" placeholder="john@example.com">
+              </div>
+              
+              <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+                <div class="relative">
+                  <input type="password" id="password" required minlength="8" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition" placeholder="At least 8 characters">
+                  <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  </button>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Must be 8+ characters, including numbers & symbols.</p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2 mt-4">What's your primary goal?</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition hover:border-primary-200 peer-checked">
+                    <input type="radio" name="role" value="student" class="peer sr-only" checked>
+                    <div class="flex w-full items-center justify-between">
+                      <div class="flex items-center">
+                        <div class="text-sm">
+                          <p class="font-medium text-gray-900 border-b-2 border-transparent peer-checked:border-primary-500 pb-1">I want to learn 🎓</p>
+                          <div class="text-gray-500 mt-1 text-xs">Browse courses & find tutors</div>
+                        </div>
+                      </div>
+                      <div class="h-5 w-5 rounded-full border border-gray-300 bg-white flex items-center justify-center peer-checked:border-primary-500 peer-checked:bg-primary-500 transition-colors">
+                          <svg class="w-3 h-3 text-white hidden peer-checked:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                      </div>
+                    </div>
+                    <div class="absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-primary-500 pointer-events-none" aria-hidden="true"></div>
+                  </label>
+
+                  <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition hover:border-primary-200">
+                    <input type="radio" name="role" value="tutor" class="peer sr-only">
+                    <div class="flex w-full items-center justify-between">
+                      <div class="flex items-center">
+                        <div class="text-sm">
+                          <p class="font-medium text-gray-900 border-b-2 border-transparent peer-checked:border-primary-500 pb-1">I want to teach 👩‍🏫</p>
+                          <div class="text-gray-500 mt-1 text-xs">Share knowledge & earn</div>
+                        </div>
+                      </div>
+                       <div class="h-5 w-5 rounded-full border border-gray-300 bg-white flex items-center justify-center peer-checked:border-primary-500 peer-checked:bg-primary-500 transition-colors">
+                           <svg class="w-3 h-3 text-white hidden peer-checked:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                       </div>
+                    </div>
+                    <div class="absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-primary-500 pointer-events-none" aria-hidden="true"></div>
+                  </label>
+                </div>
+              </div>
+          </div>
+
+          <!-- LEVEL 2 FIELDS: INSTRUCTOR ONLY -->
+          <div id="instructor-fields" class="hidden space-y-4 mt-8 pt-6 border-t border-gray-200 animate-fade-in">
+              <div class="bg-primary-50 border border-primary-100 rounded-lg p-4 mb-4">
+                  <h4 class="text-primary-800 font-medium mb-1">Instructor Account Upgrade</h4>
+                  <p class="text-primary-600 text-xs text-justify">To list you as a tutor, we need to verify your background and expertise to maintain quality on our platform.</p>
+              </div>
+
+              <div>
+                <label for="headline" class="block text-sm font-medium text-gray-700 mb-1">Headline / Title *</label>
+                <input type="text" id="headline" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition" placeholder="e.g. Senior Software Engineer">
+              </div>
+
+              <div>
+                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Expertise Category *</label>
+                <select id="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition bg-white">
+                    <option value="" disabled selected>Select a category...</option>
+                    <option value="math">Mathematics</option>
+                    <option value="science">Science</option>
+                    <option value="coding">Coding & Tech</option>
+                    <option value="languages">Languages</option>
+                    <option value="arts">Arts & Humanities</option>
+                    <option value="music">Music</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Biography *</label>
+                <textarea id="bio" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition resize-none custom-scrollbar" placeholder="Tell students about your experience and teaching style..."></textarea>
+              </div>
+
+              <div>
+                <label for="linkedin" class="block text-sm font-medium text-gray-700 mb-1">LinkedIn / Profile URL (Optional)</label>
+                <input type="text" id="linkedin" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition" placeholder="URL, Drive link, or NA">
+              </div>
+
+                  <div>
+                    <label for="video_url" class="block text-sm font-medium text-gray-700 mb-1">30s Intro Video (Google Drive Link) *</label>
+                    <input type="url" id="video_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition" placeholder="Must be viewable by anyone">
+                  </div>
+                  <div>
+                    <label for="certs_url" class="block text-sm font-medium text-gray-700 mb-1">Achievements Link (Drive) *</label>
+                    <input type="url" id="certs_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition" placeholder="Link to certificates folder">
+                  </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Profile Photo *</label>
+                <div id="photo-upload-container" class="relative">
+                  <input type="file" id="profile_photo" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required>
+                  <div id="upload-placeholder" class="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 hover:border-primary-500 hover:bg-primary-50 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mb-1"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                    <span class="text-sm font-medium text-gray-700">Choose File</span>
+                    <span class="text-xs text-gray-500 mt-1">Upload a professional headshot (JPG, PNG, max 5MB)</span>
+                  </div>
+                </div>
+                <div id="photo-preview-container" class="hidden relative inline-block mt-2">
+                  <img id="photo-preview" class="w-24 h-24 object-cover rounded-xl border border-gray-200">
+                  <button type="button" id="remove-photo" class="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 hover:bg-red-200 shadow-sm border border-red-200 z-20">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                  <div class="absolute inset-0 bg-black bg-opacity-40 rounded-xl flex items-center justify-center opacity-0 hover:opacity-100 transition cursor-pointer z-10" id="edit-photo-overlay">
+                      <span class="text-white text-xs font-semibold">Change</span>
+                  </div>
+                </div>
+              </div>
+              </div>
+
+              <div class="pt-2">
+                <label class="flex items-start gap-3 cursor-pointer bg-gray-50 p-3 rounded-lg border border-gray-200" id="student-agreement-label">
+                  <input type="checkbox" id="student-agreement" class="mt-1 w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500 cursor-pointer">
+                  <span class="text-xs text-gray-600 leading-relaxed">
+                    I agree to the <a href="#" class="text-primary-600 font-medium hover:underline">Terms & Conditions</a> and <a href="#" class="text-primary-600 font-medium hover:underline">Privacy Policy</a>.
+                  </span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer bg-primary-50 p-3 rounded-lg border border-primary-200 hidden" id="instructor-agreement-label">
+                  <input type="checkbox" id="instructor-agreement" class="mt-1 w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500 cursor-pointer">
+                  <span class="text-xs text-gray-600 leading-relaxed">
+                    I agree to the <a href="#" class="text-primary-600 font-medium hover:underline">Instructor Terms & Conditions</a>. I certify that all given info and certificates are genuine and accept that my account may be revoked if proven false.
+                  </span>
+                </label>
+              </div>
+          </div>
+
+          <div class="pt-4 border-t border-gray-100 flex flex-col items-center">
+              <button type="submit" id="submit-btn" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 rounded-lg transition shadow-sm flex items-center justify-center text-base">
+                Create Account
+              </button>
+              <p class="text-center text-gray-600 mt-4 text-sm">
+                Already have an account? <a href="/login.html" class="font-medium text-primary-600 hover:text-primary-700">Sign in</a>
+              </p>
+          </div>
+
+        </form>
+      </div>
+    </div>
+    
+    <style>
+      .animate-fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent; 
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e2e8f0; 
+        border-radius: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #cbd5e1; 
+      }
+    </style>
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module">
+      import { supabase } from '/src/supabase.js'
+
+      const form = document.getElementById('signup-form')
+      const btn = document.getElementById('submit-btn')
+      const errorMsg = document.getElementById('error-message')
+      
+      // Dynamic Field Toggling based on Role
+      const roleRadios = document.querySelectorAll('input[name="role"]');
+      const instructorFields = document.getElementById('instructor-fields');
+      const instInputs = instructorFields.querySelectorAll('input, select, textarea');
+      const studentAgreementLabel = document.getElementById('student-agreement-label');
+      const instructorAgreementLabel = document.getElementById('instructor-agreement-label');
+
+      roleRadios.forEach(radio => {
+          radio.addEventListener('change', (e) => {
+              if (e.target.value === 'tutor') {
+                  instructorFields.classList.remove('hidden');
+                  instInputs.forEach(el => el.setAttribute('required', 'true'));
+                  studentAgreementLabel.classList.add('hidden');
+                  instructorAgreementLabel.classList.remove('hidden');
+              } else {
+                  instructorFields.classList.add('hidden');
+                  instInputs.forEach(el => el.removeAttribute('required'));
+                  studentAgreementLabel.classList.remove('hidden');
+                  instructorAgreementLabel.classList.add('hidden');
+              }
+          });
+      });
+
+      // Password View Toggle
+      const togglePasswordBtn = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.getElementById('eye-icon');
+      
+      togglePasswordBtn.addEventListener('click', () => {
+          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+          if (type === 'text') {
+              eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />`;
+          } else {
+              eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />`;
+          }
+      });
+
+      // Photo Upload UI
+      const profilePhotoInput = document.getElementById('profile_photo');
+      const photoUploadContainer = document.getElementById('photo-upload-container');
+      const photoPreviewContainer = document.getElementById('photo-preview-container');
+      const photoPreviewImg = document.getElementById('photo-preview');
+      const removePhotoBtn = document.getElementById('remove-photo');
+      const editPhotoOverlay = document.getElementById('edit-photo-overlay');
+
+      profilePhotoInput.addEventListener('change', function() {
+          if (this.files && this.files[0]) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  photoPreviewImg.src = e.target.result;
+                  photoUploadContainer.classList.add('hidden');
+                  photoPreviewContainer.classList.remove('hidden');
+              }
+              reader.readAsDataURL(this.files[0]);
+          }
+      });
+
+      removePhotoBtn.addEventListener('click', () => {
+          profilePhotoInput.value = ''; // clear
+          photoPreviewContainer.classList.add('hidden');
+          photoUploadContainer.classList.remove('hidden');
+      });
+
+      editPhotoOverlay.addEventListener('click', () => {
+          profilePhotoInput.click();
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        errorMsg.classList.add('hidden')
+        
+        // Level 1 data
+        const firstName = document.getElementById('first_name').value
+        const lastName = document.getElementById('last_name').value
+        const email = document.getElementById('email').value
+        const password = document.getElementById('password').value
+        const role = document.querySelector('input[name="role"]:checked').value
+
+        // Custom validation
+        if (role === 'tutor') {
+            const agreed = document.getElementById('instructor-agreement').checked;
+            if (!agreed) {
+                errorMsg.textContent = "You must agree to Instructor Terms."
+                errorMsg.classList.remove('hidden')
+                return;
+            }
+            
+            // Validate profile photo
+            const profilePhotoFile = document.getElementById('profile_photo').files[0];
+            if (!profilePhotoFile) {
+                errorMsg.textContent = "Profile photo is required for tutor applications."
+                errorMsg.classList.remove('hidden')
+                return;
+            }
+            
+            // Check file size (5MB limit)
+            if (profilePhotoFile.size > 5 * 1024 * 1024) {
+                errorMsg.textContent = "Profile photo must be less than 5MB."
+                errorMsg.classList.remove('hidden')
+                return;
+            }
+            
+            // Check file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(profilePhotoFile.type)) {
+                errorMsg.textContent = "Profile photo must be JPG, PNG, or WebP format."
+                errorMsg.classList.remove('hidden')
+                return;
+            }
+        } else {
+            const agreed = document.getElementById('student-agreement').checked;
+            if (!agreed) {
+                errorMsg.textContent = "You must agree to Terms & Conditions."
+                errorMsg.classList.remove('hidden')
+                return;
+            }
+        }
+
+        btn.disabled = true
+        btn.textContent = 'Creating account...'
+        
+        try {
+            console.log("Starting signup for:", email, "as", role);
+            
+            // 1. Register user in Supabase Auth
+            const { data, error: authError } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        first_name: firstName,
+                        last_name: lastName,
+                        role: role
+                    }
+                }
+            })
+            
+            if (authError) {
+                console.error("Auth Error:", authError);
+                // Handle specific common Supabase errors
+                if (authError.status === 429) {
+                    throw new Error("Too many requests. Please wait a few minutes before trying again.");
+                }
+                if (authError.message.includes("already registered")) {
+                    throw new Error("This email is already registered. Please go to the login page.");
+                }
+                throw authError;
+            }
+            
+            if (!data.user) {
+                throw new Error("Signup failed: Account could not be created. Please try a different email.");
+            }
+            
+            console.log("Auth successful, User ID:", data.user.id);
+            
+            // 2. Fallback Profile Insert (If trigger doesn't exist)
+            // We attempt to insert manually. If it fails due to RLS, that's okay (as it means trigger likely handled it).
+            const { error: profileError } = await supabase.from('profiles').upsert({
+                id: data.user.id,
+                email: email,
+                first_name: firstName,
+                last_name: lastName,
+                role: role,
+                is_blocked: false
+            });
+            
+            if (profileError) {
+                console.warn("Soft warning: Profile table sync failed.", profileError.message);
+            }
+
+            // 3. Tutor-specific data (Level 2)
+            if (role === 'tutor') {
+                const headline = document.getElementById('headline').value;
+                const bio = document.getElementById('bio').value;
+                const category = document.getElementById('category').value;
+                const linkedin = document.getElementById('linkedin').value || 'NA';
+                const videoUrl = document.getElementById('video_url').value;
+                const certsUrl = document.getElementById('certs_url').value;
+                const profilePhotoFile = document.getElementById('profile_photo').files[0];
+
+                // Upload profile photo
+                let profilePhotoUrl = '';
+                if (profilePhotoFile) {
+                    try {
+                        const fileExt = profilePhotoFile.name.split('.').pop();
+                        const fileName = `${data.user.id}_${Date.now()}.${fileExt}`;
+                        
+                        const { data: uploadData, error: uploadError } = await supabase.storage
+                            .from('profile-photos')
+                            .upload(fileName, profilePhotoFile, {
+                                cacheControl: '3600',
+                                upsert: false
+                            });
+                        
+                        if (uploadError) {
+                            console.error("Storage Error:", uploadError);
+                            throw new Error(`Profile photo upload failed: ${uploadError.message}. Ensure the 'profile-photos' bucket exists and is set to Public.`);
+                        }
+                        
+                        const { data: { publicUrl } } = supabase.storage
+                            .from('profile-photos')
+                            .getPublicUrl(fileName);
+                        
+                        profilePhotoUrl = publicUrl;
+                    } catch (uploadErr) {
+                        throw new Error(uploadErr.message);
+                    }
+                }
+
+                // Insert into tutor_profiles
+                const { error: dbError } = await supabase.from('tutor_profiles').insert({
+                    user_id: data.user.id,
+                    headline, 
+                    bio, 
+                    category, 
+                    linkedin, 
+                    video_url: videoUrl, 
+                    certs_url: certsUrl,
+                    profile_photo_url: profilePhotoUrl,
+                    status: 'PENDING'
+                });
+                
+                if (dbError) {
+                    console.error("DB Error:", dbError);
+                    throw new Error("Failed to save tutor profile: " + dbError.message + ". Please ensure your database tables are correctly configured.");
+                }
+            }
+            
+            alert('Success! Your account has been created. If email verification is enabled, please check your inbox before logging in.')
+            window.location.href = '/login.html'
+            
+        } catch (err) {
+            console.error("Signup process failed:", err);
+            errorMsg.textContent = err.message || 'An unexpected error occurred during signup.'
+            errorMsg.classList.remove('hidden')
+        } finally {
+            btn.disabled = false
+            btn.textContent = 'Create Account'
+        }
+      })
+    </script>
+  </body>
+</html>

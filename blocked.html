@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Blocked | E-Tutor Connect</title>
+    <meta name="description" content="Your E-Tutor Connect account has been suspended. Contact support to resolve.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary-50: #ecfdf5;
+            --primary-100: #d1fae5;
+            --primary-200: #a7f3d0;
+            --primary-500: #10b981;
+            --primary-600: #059669;
+            --primary-700: #047857;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --red-50: #fef2f2;
+            --red-100: #fee2e2;
+            --red-500: #ef4444;
+            --red-600: #dc2626;
+            --red-700: #b91c1c;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--gray-50);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            color: var(--gray-800);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative background elements */
+        .bg-decoration {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-decoration-1 {
+            width: 600px; height: 600px;
+            background: var(--primary-500);
+            top: -200px; left: -200px;
+            animation: float 12s ease-in-out infinite alternate;
+        }
+        .bg-decoration-2 {
+            width: 500px; height: 500px;
+            background: var(--red-500);
+            bottom: -150px; right: -150px;
+            animation: float 15s ease-in-out infinite alternate-reverse;
+        }
+        .bg-decoration-3 {
+            width: 400px; height: 400px;
+            background: var(--primary-600);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: float 10s ease-in-out infinite alternate;
+        }
+        @keyframes float {
+            from { transform: translate(0, 0); }
+            to   { transform: translate(30px, 20px); }
+        }
+
+        /* Logo Header */
+        .logo-header {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .logo-icon {
+            background: var(--primary-500);
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+        .logo-text span {
+            color: var(--primary-500);
+        }
+
+        /* Main Card */
+        .card {
+            position: relative;
+            z-index: 1;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 1.5rem;
+            padding: 2.5rem 2rem;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Shield Icon */
+        .shield-ring {
+            width: 80px; height: 80px;
+            background: var(--red-50);
+            border: 2px solid var(--red-100);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: pulse-ring 2.5s ease-in-out infinite;
+        }
+        @keyframes pulse-ring {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+            50%       { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
+        }
+        .shield-ring svg {
+            width: 36px; height: 36px;
+            color: var(--red-500);
+        }
+
+        /* Status Label */
+        .status-label {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--red-600);
+            background: var(--red-50);
+            border: 1px solid var(--red-100);
+            padding: 0.3rem 0.85rem;
+            border-radius: 999px;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            line-height: 1.25;
+            margin-bottom: 0.75rem;
+        }
+
+        .desc {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            line-height: 1.65;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Block Reason Box */
+        .reason-box {
+            display: none;
+            background: var(--red-50);
+            border: 1px solid var(--red-100);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .reason-box .reason-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--red-600);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .reason-box .reason-label svg {
+            width: 14px; height: 14px;
+        }
+        .reason-box .reason-text {
+            font-size: 0.875rem;
+            color: var(--red-700);
+            line-height: 1.5;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--gray-100);
+            margin: 1.25rem 0;
+        }
+
+        /* Appeal Section */
+        .appeal-section {
+            background: var(--primary-50);
+            border: 1px solid var(--primary-100);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .appeal-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary-700);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .appeal-title svg {
+            width: 16px; height: 16px;
+        }
+        .appeal-desc {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            line-height: 1.55;
+            margin-bottom: 0.85rem;
+        }
+        .appeal-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1rem 0;
+        }
+        .appeal-steps li {
+            font-size: 0.78rem;
+            color: var(--gray-600);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.4rem;
+        }
+        .appeal-steps li .step-num {
+            flex-shrink: 0;
+            width: 18px; height: 18px;
+            background: var(--primary-500);
+            color: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        /* Email Button */
+        .email-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            background: var(--primary-600);
+            color: white;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 0.625rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+        }
+        .email-btn:hover {
+            background: var(--primary-700);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3);
+        }
+        .email-btn:active {
+            transform: translateY(0);
+        }
+        .email-btn svg {
+            width: 16px; height: 16px;
+        }
+
+        /* Back to login link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+            color: var(--gray-400);
+            text-decoration: none;
+            margin-top: 1.5rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: var(--gray-600);
+        }
+        .back-link svg {
+            width: 14px; height: 14px;
+        }
+
+        /* Footer brand */
+        .brand-footer {
+            margin-top: 1.25rem;
+            font-size: 0.75rem;
+            color: var(--gray-300);
+            font-weight: 500;
+        }
+        .brand-footer span { color: var(--primary-500); font-weight: 700; }
+
+        /* Loading state */
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1.5rem;
+            z-index: 5;
+        }
+        .spinner {
+            width: 32px; height: 32px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary-500);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .card { padding: 2rem 1.25rem; }
+            h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Decorations -->
+    <div class="bg-decoration bg-decoration-1"></div>
+    <div class="bg-decoration bg-decoration-2"></div>
+    <div class="bg-decoration bg-decoration-3"></div>
+
+    <!-- Logo -->
+    <div class="logo-header">
+        <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+        </div>
+        <div class="logo-text">E-Tutor <span>Connect</span></div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card">
+        <!-- Loading -->
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Shield Icon -->
+        <div class="shield-ring">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+            </svg>
+        </div>
+
+        <div class="status-label">Account Suspended</div>
+        <h1>Your Account Has Been Blocked</h1>
+        <p class="desc">
+            An administrator has suspended your access to <strong style="color:var(--gray-800);">E-Tutor Connect</strong>.
+            You are unable to use any features of the platform until the suspension is lifted.
+        </p>
+
+        <!-- Block reason shown dynamically -->
+        <div class="reason-box" id="reason-box">
+            <div class="reason-label">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
+                </svg>
+                Reason for Suspension
+            </div>
+            <div class="reason-text" id="reason-text"></div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Appeal Section -->
+        <div class="appeal-section">
+            <div class="appeal-title">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+                </svg>
+                Think this is a mistake? Appeal via Email
+            </div>
+            <p class="appeal-desc">
+                If you believe your account was blocked in error, you can appeal by sending an email to the admin. Please follow these steps:
+            </p>
+            <ol class="appeal-steps">
+                <li>
+                    <span class="step-num">1</span>
+                    Write a clear subject line (e.g., "Account Block Appeal – [Your Name]")
+                </li>
+                <li>
+                    <span class="step-num">2</span>
+                    Explain in detail why you believe the block was incorrect
+                </li>
+                <li>
+                    <span class="step-num">3</span>
+                    Attach any supporting evidence or screenshots as attachments
+                </li>
+            </ol>
+
+            <a href="#" id="appeal-email-btn" class="email-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+                </svg>
+                Send Appeal Email to Admin
+            </a>
+        </div>
+
+        <div class="brand-footer">© 2026 E-Tutor <span>Connect</span>. All rights reserved.</div>
+    </div>
+
+    <!-- Back link -->
+    <a href="/login.html" class="back-link" id="back-to-login">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
+        </svg>
+        Back to Login
+    </a>
+
+    <script type="module">
+        import { supabase } from '/src/supabase.js';
+
+        const ADMIN_EMAIL = 'sanapalasaimani1@gmail.com';
+
+        async function init() {
+            const loadingEl = document.getElementById('loading-overlay');
+            let userEmail = '';
+            let blockReason = '';
+            let userName = '';
+
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+
+                if (session) {
+                    userEmail = session.user.email || '';
+
+                    // Fetch block reason and user info before signing out
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('block_reason, is_blocked, first_name, last_name')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (profile) {
+                        userName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
+
+                        // If user is NOT actually blocked, redirect back to login
+                        if (profile.is_blocked === false) {
+                            window.location.href = '/login.html';
+                            return;
+                        }
+
+                        // Show block reason if available
+                        if (profile.block_reason) {
+                            blockReason = profile.block_reason;
+                            document.getElementById('reason-box').style.display = 'block';
+                            document.getElementById('reason-text').textContent = profile.block_reason;
+                        }
+                    }
+
+                    // Sign out AFTER reading profile data
+                    await supabase.auth.signOut();
+                }
+            } catch (err) {
+                console.error('Error loading blocked page data:', err);
+            }
+
+            // Build mailto link with pre-filled subject and body
+            const subject = encodeURIComponent(
+                `Account Block Appeal – ${userName || userEmail || 'User'}`
+            );
+            const body = encodeURIComponent(
+                `Dear Admin,\n\n` +
+                `I am writing to appeal the suspension of my E-Tutor Connect account.\n\n` +
+                `Account Email: ${userEmail || '[Your Email]'}\n` +
+                `Name: ${userName || '[Your Name]'}\n` +
+                (blockReason ? `Block Reason Given: ${blockReason}\n` : '') +
+                `\nI believe my account was blocked incorrectly because:\n` +
+                `[Please explain your reason here]\n\n` +
+                `I have attached supporting documents/screenshots for your review.\n\n` +
+                `Thank you for looking into this matter.\n\n` +
+                `Best regards,\n` +
+                `${userName || userEmail || '[Your Name]'}`
+            );
+
+            const mailtoLink = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
+            document.getElementById('appeal-email-btn').href = mailtoLink;
+
+            // Hide loading overlay
+            if (loadingEl) loadingEl.style.display = 'none';
+
+            // Prevent back navigation to dashboard
+            history.pushState(null, '', window.location.href);
+            window.addEventListener('popstate', () => {
+                history.pushState(null, '', window.location.href);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>

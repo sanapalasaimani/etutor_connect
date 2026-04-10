@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Tutor Portal | E-Tutor Connect</title>
+    <!-- Tailwind for base layouts, Lucide for icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            border-radius: 0 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <div id="dashboard-main" class="min-h-screen">
+        <!-- Sidebar and Content -->
+        <div class="tutor-layout">
+            <!-- Sidebar -->
+            <aside class="bg-white border-r border-gray-100 flex flex-col h-screen sticky top-0">
+                <div class="p-6 border-b border-gray-50 flex items-center justify-between">
+                    <span class="text-xl font-bold">E-Tutor <span class="text-emerald-500">Connect</span></span>
+                    <button class="lg:hidden">
+                        <i data-lucide="menu"></i>
+                    </button>
+                </div>
+                <!-- Navigation Tabs -->
+                <nav class="flex-1 p-4 space-y-2">
+                    <a href="#" class="nav-link bg-emerald-50 text-emerald-700 flex items-center gap-3 p-3 rounded-xl font-medium" data-target="section-courses" id="nav-courses">
+                        <i data-lucide="book-open"></i>
+                        <span>My Courses</span>
+                    </a>
+
+                    <a href="#" class="nav-link hover:bg-gray-50 flex items-center gap-3 p-3 rounded-xl font-medium" data-target="section-analytics" id="nav-analytics">
+                        <i data-lucide="bar-chart-2"></i>
+                        <span>Analytics Tracking</span>
+                    </a>
+                    <a href="#" class="nav-link hover:bg-gray-50 flex items-center gap-3 p-3 rounded-xl font-medium" data-target="section-payments">
+                        <i data-lucide="credit-card"></i>
+                        <span>Earnings Explorer</span>
+                    </a>
+                    <a href="#" class="nav-link hover:bg-gray-50 flex items-center gap-3 p-3 rounded-xl font-medium" data-target="section-notifications" id="nav-notifications">
+                        <i data-lucide="bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </nav>
+                <!-- Profile & Logout Section -->
+                <div class="p-4 border-t border-gray-50 space-y-2">
+                    <button onclick="handleLogout()" class="flex items-center gap-3 w-full bg-red-50 text-red-600 p-3 rounded-xl hover:bg-red-100 transition text-sm">
+                        <i data-lucide="log-out"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="p-10 overflow-y-auto">
+                <header class="flex justify-between items-center mb-10">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-gray-900">Welcome Back, Tutor</h1>
+                        <p class="text-gray-500 mt-1">Manage your Self-Paced, Cohort and 1-on-1 courses.</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="showSection('section-notifications')" class="bg-gray-100 p-2 relative hover:bg-emerald-50 transition">
+                            <i data-lucide="bell"></i>
+                            <span id="notification-badge" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-600 text-white text-[9px] font-black flex items-center justify-center px-1 hidden shadow-sm">0</span>
+                        </button>
+                        <div class="relative">
+                            <button onclick="toggleProfileDropdown()" class="flex items-center gap-2">
+                                <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold">
+                                    T1
+                                </div>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-500"></i>
+                            </button>
+                            <div id="profile-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 hidden">
+                                <div class="px-4 py-2 border-b border-gray-100">
+                                    <p class="text-sm font-medium text-gray-900">Tutor Name</p>
+                                    <p class="text-xs text-gray-500">tutor@example.com</p>
+                                </div>
+
+                                <button onclick="handleLogout()" class="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div id="section-courses" class="dashboard-section animate-fadeIn">
+                    <!-- Loaded dynamically via advanced_script.js -->
+                </div>
+                
+                <div id="section-analytics" class="dashboard-section hidden">
+                    <div class="grid grid-cols-3 gap-6 mb-10 text-left">
+                        <div class="bg-white p-6 border rounded-2xl shadow-sm border-gray-100">
+                             <div class="text-gray-500 text-xs font-bold uppercase tracking-widest">Total Earned</div>
+                             <div class="text-3xl font-black mt-2 text-emerald-600" id="stat-total-earned">₹0</div>
+                             <p class="text-[10px] text-gray-400 mt-2 italic">* After 10% platform fee</p>
+                        </div>
+                        <div class="bg-white p-6 border rounded-2xl shadow-sm border-gray-100">
+                             <div class="text-gray-500 text-xs font-bold uppercase tracking-widest">Active Students</div>
+                             <div class="text-3xl font-black mt-2" id="stat-active-students">0</div>
+                        </div>
+                        <div class="bg-white p-6 border rounded-2xl shadow-sm border-gray-100">
+                             <div class="text-gray-500 text-xs font-bold uppercase tracking-widest">Enrollments</div>
+                             <div class="text-3xl font-black mt-2" id="stat-total-enrollments">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="section-payments" class="dashboard-section hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 text-left">
+                        <!-- Payout Settings -->
+                        <div class="bg-white p-8 border border-emerald-100 rounded-3xl shadow-sm">
+                            <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                                <i data-lucide="wallet" class="text-emerald-500"></i>
+                                Payout Account
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Option 1: Bank Transfer</label>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <select id="payout-bank-name" class="w-full p-2.5 bg-white border border-gray-100 rounded-xl outline-none focus:border-emerald-500 transition text-sm">
+                                            <option value="">Choose Bank...</option>
+                                            <option value="SBI">State Bank of India</option>
+                                            <option value="HDFC">HDFC Bank</option>
+                                            <option value="ICICI">ICICI Bank</option>
+                                            <option value="AXIS">Axis Bank</option>
+                                            <option value="PNB">Punjab National Bank</option>
+                                            <option value="OTHER">Other / Private Bank</option>
+                                        </select>
+                                        <input type="text" id="payout-account-no" class="w-full p-2.5 bg-white border border-gray-100 rounded-xl outline-none focus:border-emerald-500 transition text-sm" placeholder="Account No">
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <input type="text" id="payout-ifsc" class="w-full p-2.5 bg-white border border-gray-100 rounded-xl outline-none focus:border-emerald-500 transition text-sm" placeholder="IFSC Code">
+                                            <input type="text" id="payout-branch" class="w-full p-2.5 bg-white border border-gray-100 rounded-xl outline-none focus:border-emerald-500 transition text-sm" placeholder="Branch">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-4 py-1">
+                                    <div class="flex-1 h-[1px] bg-gray-100"></div>
+                                    <span class="text-[10px] font-black text-gray-300 uppercase italic">OR</span>
+                                    <div class="flex-1 h-[1px] bg-gray-100"></div>
+                                </div>
+
+                                <div class="bg-blue-50/50 rounded-2xl p-4 border border-blue-100/30">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Option 2: UPI / Phone</label>
+                                    </div>
+                                    <input type="text" id="payout-phone" class="w-full p-2.5 bg-white border border-gray-100 rounded-xl outline-none focus:border-blue-500 transition text-sm" placeholder="+91 00000 00000">
+                                </div>
+                                <button onclick="savePayoutDetails()" id="save-payout-btn" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition shadow-lg shadow-emerald-100">
+                                    Update Payment Details
+                                </button>
+                                <p class="text-[10px] text-gray-400 text-center px-4">Required to receive your earnings from the students.</p>
+                            </div>
+                        </div>
+
+                        <!-- Earnings Summary -->
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="bg-gray-900 text-white p-8 rounded-3xl relative overflow-hidden">
+                                <div class="relative z-10">
+                                    <p class="text-emerald-400 font-bold uppercase tracking-widest text-xs">Available Balance</p>
+                                    <h2 class="text-5xl font-black mt-2" id="display-balance">₹0</h2>
+                                    <div class="mt-6 flex gap-4">
+                                        <div class="px-4 py-2 bg-white/10 rounded-xl border border-white/10">
+                                            <p class="text-[10px] opacity-60">Gross Revenue</p>
+                                            <p class="font-bold" id="display-gross">₹0</p>
+                                        </div>
+                                        <div class="px-4 py-2 bg-white/10 rounded-xl border border-white/10">
+                                            <p class="text-[10px] opacity-60">Platform Fee (10%)</p>
+                                            <p class="font-bold text-red-400" id="display-fee">-₹0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i data-lucide="trending-up" class="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-10 text-emerald-500"></i>
+                            </div>
+
+                            <div class="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
+                                <div class="p-6 border-b border-gray-50 flex justify-between items-center">
+                                    <h4 class="font-bold text-gray-900">Transaction History</h4>
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase">Recent 20</span>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-sm">
+                                        <thead class="bg-gray-50 border-b">
+                                            <tr>
+                                                <th class="p-4 font-bold text-gray-500">DATE</th>
+                                                <th class="p-4 font-bold text-gray-500">SOURCE</th>
+                                                <th class="p-4 font-bold text-gray-500">GROSS</th>
+                                                <th class="p-4 font-bold text-gray-500 text-right">NET (90%)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="payout-history-table">
+                                            <!-- Dynamic Rows -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="section-notifications" class="dashboard-section hidden">
+                    <div class="max-w-4xl">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h3 class="text-2xl font-black text-gray-900">Notifications</h3>
+                                <p class="text-gray-500 text-sm">Stay updated on course interactions and comments.</p>
+                            </div>
+                            <button onclick="markAllNotificationsAsRead()" class="text-xs font-bold text-emerald-600 hover:underline">Mark all as read</button>
+                        </div>
+                        
+                        <div id="notifications-list" class="space-y-4">
+                            <!-- Notifications go here -->
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>

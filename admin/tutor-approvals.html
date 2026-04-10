@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Approvals | E-Tutor Connect Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Tutor Card Grid */
+        .tutor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 1.25rem; }
+        .tutor-card { background: white; border-radius: var(--radius-xl); border: 1px solid var(--border-color); padding: 1.5rem; transition: 0.2s; cursor: pointer; }
+        .tutor-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .tutor-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .tutor-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: var(--gray-100); flex-shrink: 0; }
+        .tutor-info h3 { font-size: 1rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.2rem; }
+        .tutor-info p { color: var(--gray-500); font-size: 0.8rem; }
+        .tutor-bio { color: var(--gray-600); font-size: 0.85rem; line-height: 1.5; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .tutor-links { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .link-btn { padding: 0.3rem 0.7rem; border-radius: var(--radius-md); font-size: 0.75rem; font-weight: 500; cursor: pointer; border: 1px solid var(--border-color); background: white; transition: 0.2s; display: inline-flex; align-items: center; gap: 0.3rem; }
+        .link-btn:hover { background: var(--gray-50); }
+        .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 99px; font-size: 0.72rem; font-weight: 600; }
+        .badge-pending  { background: #fef3c7; color: #92400e; }
+        .badge-approved { background: #d1fae5; color: #065f46; }
+        .badge-rejected { background: #fee2e2; color: #991b1b; }
+        .badge-revision_requested { background: #e0f2fe; color: #0369a1; }
+
+        /* Filter Buttons */
+        .filters { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .filter-btn { padding: 0.45rem 1rem; border-radius: var(--radius-md); font-weight: 500; cursor: pointer; border: 1px solid var(--border-color); background: white; transition: 0.2s; font-size: 0.875rem; }
+        .filter-btn.active { background: var(--primary-600); color: white; border-color: var(--primary-600); }
+
+        /* Loading / Empty */
+        .loading-state { text-align: center; padding: 3rem; color: var(--gray-400); }
+        .empty-state { text-align: center; padding: 3rem; color: var(--gray-400); }
+        .empty-state svg { width: 48px; height: 48px; margin: 0 auto 1rem; opacity: 0.4; display: block; }
+
+        /* Detail Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1100; justify-content: center; align-items: center; padding: 1.5rem; }
+        .modal.show { display: flex; }
+        .modal-box { background: white; border-radius: var(--radius-xl); width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.25s ease-out; }
+        @keyframes slideUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+        .modal-hd { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); }
+        .modal-hd h2 { font-size: 1.25rem; font-weight: 700; }
+        .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--gray-500); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .modal-close:hover { background: var(--gray-100); }
+        .modal-body { padding: 1.5rem 2rem; }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem; }
+        .detail-group { margin-bottom: 1rem; }
+        .detail-label { font-size: 0.8rem; color: var(--gray-500); font-weight: 500; margin-bottom: 0.25rem; }
+        .detail-value { font-size: 0.95rem; color: var(--gray-900); font-weight: 500; }
+        .media-frame { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1rem; }
+        .media-frame iframe { width: 100%; height: 100%; border: none; }
+        .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; padding-top: 1rem; border-top: 1px solid var(--border-color); margin-top: 1rem; }
+        .btn { padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; border: none; font-size: 0.875rem; transition: 0.2s; }
+        .btn-success { background: var(--primary-600); color: white; }
+        .btn-success:hover { background: var(--primary-700); }
+        .btn-danger  { background: #ef4444; color: white; }
+        .btn-danger:hover  { background: #dc2626; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-neutral { background: var(--gray-100); color: var(--gray-700); }
+        .btn-neutral:hover { background: var(--gray-200); }
+
+        /* Action Modal */
+        .action-modal-box { max-width: 480px; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .form-control { width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.875rem; }
+        .form-control:focus { outline: none; border-color: var(--primary-500); box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1); }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar (matches admin/index.html exactly) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <i data-lucide="graduation-cap"></i>
+                    </div>
+                    <span>E-Tutor <span style="color: var(--primary-500)">Connect</span></span>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-link">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span class="nav-text">Overview</span>
+                </a>
+                <a href="tutor-approvals.html" class="nav-link active">
+                    <i data-lucide="user-check"></i>
+                    <span class="nav-text">Tutor Approvals</span>
+                </a>
+                <a href="index.html#manage-users" class="nav-link">
+                    <i data-lucide="users"></i>
+                    <span class="nav-text">Manage Users</span>
+                </a>
+                <a href="index.html#payments" class="nav-link">
+                    <i data-lucide="credit-card"></i>
+                    <span class="nav-text">Payments</span>
+                </a>
+                <div class="dropdown-divider" style="margin-top: auto;"></div>
+                <a href="#" class="nav-link logout-btn" style="color: #ef4444;">
+                    <i data-lucide="log-out"></i>
+                    <span class="nav-text">Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <!-- Top Header (matches admin/index.html exactly) -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="icon-btn" id="sidebar-toggle-btn">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="search-bar">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" placeholder="Search..." class="search-input" id="search-input">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="profile-trigger" id="profile-trigger">
+                        <div class="avatar">AD</div>
+                        <span class="admin-name">Admin User</span>
+                    </button>
+                    <div class="dropdown-menu" id="profile-dropdown">
+                        <a href="#" class="dropdown-item logout-btn" style="color: #ef4444;">
+                            <i data-lucide="log-out" style="width: 16px;"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <!-- Page Header -->
+                <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h1 class="page-title">Tutor Approvals</h1>
+                        <p class="page-subtitle">Review and manage tutor applications</p>
+                    </div>
+                    <button class="btn btn-success" onclick="loadTutors()">
+                        <i data-lucide="refresh-cw"></i> Refresh
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters">
+                    <button class="filter-btn active" data-status="all">All Tutors</button>
+                    <button class="filter-btn" data-status="PENDING">Pending</button>
+                    <button class="filter-btn" data-status="APPROVED">Approved</button>
+                    <button class="filter-btn" data-status="REJECTED">Rejected</button>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading-state" class="loading-state">
+                    <i data-lucide="loader-2" style="width:32px;height:32px;display:block;margin:0 auto 1rem;"></i>
+                    <p>Loading tutor applications...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="empty-state" style="display:none;">
+                    <i data-lucide="users"></i>
+                    <h3 style="margin-bottom:0.5rem;">No tutor applications found</h3>
+                    <p>No applications match the current filter.</p>
+                </div>
+
+                <!-- Tutors Grid -->
+                <div id="tutors-grid" class="tutor-grid" style="display:none;"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tutor Detail Modal -->
+    <div id="tutor-modal" class="modal">
+        <div class="modal-box">
+            <div class="modal-hd">
+                <h2 id="modal-name">Tutor Details</h2>
+                <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-grid">
+                    <div>
+                        <div class="detail-group">
+                            <div class="detail-label">Full Name</div>
+                            <div class="detail-value" id="d-name"></div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Email Address</div>
+                            <div class="detail-value" id="d-email"></div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Category</div>
+                            <div class="detail-value" id="d-category"></div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Headline</div>
+                            <div class="detail-value" id="d-headline"></div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Biography</div>
+                            <div class="detail-value" id="d-bio" style="font-size:0.85rem;line-height:1.6;"></div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">LinkedIn / Profile URL</div>
+                            <div class="detail-value" id="d-linkedin"></div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Current Status</div>
+                            <div class="detail-value" id="d-status"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-group">
+                            <div class="detail-label">Profile Photo</div>
+                            <img id="d-photo" style="width:130px;height:130px;border-radius:50%;object-fit:cover;background:var(--gray-100);margin-bottom:1rem;" src="" onerror="this.src='../src/assets/default-avatar.png'">
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Intro Video</div>
+                            <div class="media-frame" id="d-video-frame">
+                                <iframe id="d-video" src="" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Certificates & Achievements</div>
+                            <div id="d-certs"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-neutral" onclick="closeModal()">Close</button>
+                    <button class="btn btn-warning" onclick="openActionModal('revision')">
+                        <i data-lucide="message-square"></i> Request Revision
+                    </button>
+                    <button class="btn btn-danger" onclick="openActionModal('reject')">
+                        <i data-lucide="x"></i> Reject
+                    </button>
+                    <button class="btn btn-success" onclick="openActionModal('approve')">
+                        <i data-lucide="check"></i> Approve
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Confirmation Modal -->
+    <div id="action-modal" class="modal">
+        <div class="modal-box action-modal-box">
+            <div class="modal-hd">
+                <h2 id="action-modal-title">Take Action</h2>
+                <button class="modal-close" onclick="closeActionModal()">&#x2715;</button>
+            </div>
+            <div class="modal-body">
+                <form id="action-form">
+                    <div class="form-group" id="reason-group" style="display:none;">
+                        <label>Reason for Rejection</label>
+                        <select class="form-control" id="reject-reason">
+                            <option>Insufficient Experience</option>
+                            <option>Invalid Certification</option>
+                            <option>Poor Video / Interview Quality</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Admin Comments <span style="color:var(--gray-400);font-weight:400;">(sent to tutor)</span></label>
+                        <textarea class="form-control" id="action-comments" rows="4" placeholder="Enter details for the tutor..." required></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-neutral" onclick="closeActionModal()">Cancel</button>
+                        <button type="submit" class="btn btn-success" id="action-submit-btn">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { supabase } from '../src/supabase.js';
+
+        lucide.createIcons();
+
+        let tutors = [];
+        let currentTutor = null;
+        let currentAction = '';
+        let currentFilter = 'all';
+
+        // ── Sidebar toggle (same as admin/index.html)
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        document.getElementById('sidebar-toggle-btn').addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // ── Profile dropdown
+        document.getElementById('profile-trigger').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('profile-dropdown').classList.toggle('show');
+        });
+        document.addEventListener('click', () => {
+            document.getElementById('profile-dropdown').classList.remove('show');
+        });
+
+        // ── Logout
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await supabase.auth.signOut();
+                window.location.href = '/login.html';
+            });
+        });
+
+        // ── Live search filter
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.tutor-card');
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(q) ? '' : 'none';
+            });
+        });
+
+        // ── Load tutors from DB
+        async function loadTutors() {
+            const loadingEl = document.getElementById('loading-state');
+            const emptyEl   = document.getElementById('empty-state');
+            const gridEl    = document.getElementById('tutors-grid');
+
+            loadingEl.style.display = 'block';
+            emptyEl.style.display   = 'none';
+            gridEl.style.display    = 'none';
+
+            try {
+                let query = supabase
+                    .from('tutor_profiles')
+                    .select('*, profiles:user_id(email, first_name, last_name)');
+
+                if (currentFilter !== 'all') {
+                    query = query.eq('status', currentFilter);
+                }
+
+                const { data, error } = await query;
+                if (error) throw error;
+
+                tutors = data || [];
+                renderTutors();
+            } catch (err) {
+                console.error('Load error:', err);
+                loadingEl.innerHTML = `<p style="color:#ef4444;">Error loading tutor applications: ${err.message}</p>`;
+            }
+        }
+
+        // ── Render tutor cards
+        function renderTutors() {
+            const loadingEl = document.getElementById('loading-state');
+            const emptyEl   = document.getElementById('empty-state');
+            const gridEl    = document.getElementById('tutors-grid');
+
+            loadingEl.style.display = 'none';
+
+            if (tutors.length === 0) {
+                emptyEl.style.display = 'block';
+                gridEl.style.display  = 'none';
+                return;
+            }
+
+            emptyEl.style.display = 'none';
+            gridEl.style.display  = 'grid';
+
+            gridEl.innerHTML = tutors.map(t => {
+                const firstName = t.profiles?.first_name || 'Tutor';
+                const lastName  = t.profiles?.last_name  || '';
+                const email     = t.profiles?.email      || 'N/A';
+                const status    = t.status || 'PENDING';
+                const photoSrc  = t.profile_photo_url || '../src/assets/default-avatar.png';
+
+                return `
+                <div class="tutor-card" onclick="showTutorDetails('${t.id}')">
+                    <div class="tutor-header">
+                        <img src="${photoSrc}" class="tutor-avatar" onerror="this.src='../src/assets/default-avatar.png'" alt="${firstName}">
+                        <div class="tutor-info">
+                            <h3>${firstName} ${lastName}</h3>
+                            <p>${email}</p>
+                        </div>
+                    </div>
+                    <div class="tutor-bio">${t.bio || 'No biography provided.'}</div>
+                    <div class="tutor-links">
+                        <button class="link-btn" onclick="event.stopPropagation(); viewMedia('${t.video_url}', 'Intro Video')">
+                            <i data-lucide="video"></i> Video
+                        </button>
+                        <button class="link-btn" onclick="event.stopPropagation(); viewMedia('${t.certs_url}', 'Certificates')">
+                            <i data-lucide="file-text"></i> Certificates
+                        </button>
+                        ${t.linkedin && t.linkedin !== 'NA' ? `
+                            <button class="link-btn" onclick="event.stopPropagation(); window.open('${t.linkedin}', '_blank')">
+                                <i data-lucide="external-link"></i> LinkedIn
+                            </button>` : ''}
+                    </div>
+                    <span class="badge badge-${status.toLowerCase()}">${status}</span>
+                </div>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        // ── Show tutor detail modal
+        function showTutorDetails(tutorId) {
+            currentTutor = tutors.find(t => t.id === tutorId);
+            if (!currentTutor) return;
+
+            const t = currentTutor;
+            const firstName = t.profiles?.first_name || 'Tutor';
+            const lastName  = t.profiles?.last_name  || '';
+            const email     = t.profiles?.email      || 'N/A';
+            const fullName  = `${firstName} ${lastName}`;
+            const status    = t.status || 'PENDING';
+
+            document.getElementById('modal-name').textContent = fullName;
+            document.getElementById('d-name').textContent     = fullName;
+            document.getElementById('d-email').textContent    = email;
+            document.getElementById('d-category').textContent = t.category || '—';
+            document.getElementById('d-headline').textContent = t.headline  || '—';
+            document.getElementById('d-bio').textContent      = t.bio       || '—';
+            document.getElementById('d-status').innerHTML     = `<span class="badge badge-${status.toLowerCase()}">${status}</span>`;
+            document.getElementById('d-linkedin').innerHTML   = t.linkedin && t.linkedin !== 'NA'
+                ? `<a href="${t.linkedin}" target="_blank" style="color:var(--primary-600);">${t.linkedin}</a>`
+                : 'Not provided';
+            document.getElementById('d-photo').src       = t.profile_photo_url || '../src/assets/default-avatar.png';
+            document.getElementById('d-video').src       = t.video_url || '';
+            document.getElementById('d-certs').innerHTML = t.certs_url
+                ? `<button class="link-btn" onclick="viewMedia('${t.certs_url}', 'Certificates')"><i data-lucide="folder"></i> View Certificates</button>`
+                : 'Not provided';
+
+            document.getElementById('tutor-modal').classList.add('show');
+            lucide.createIcons();
+        }
+
+        // ── Open media in iframe popup
+        function viewMedia(url, title) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal show';
+            overlay.innerHTML = `
+                <div class="modal-box" style="max-width:900px;">
+                    <div class="modal-hd">
+                        <h2>${title}</h2>
+                        <button class="modal-close" onclick="this.closest('.modal').remove()">&#x2715;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="media-frame" style="height:70vh;">
+                            <iframe src="${url}" frameborder="0" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
+                        </div>
+                    </div>
+                </div>`;
+            document.body.appendChild(overlay);
+        }
+
+        function closeModal() {
+            document.getElementById('tutor-modal').classList.remove('show');
+            document.getElementById('d-video').src = '';
+        }
+
+        // ── Action modal
+        function openActionModal(action) {
+            currentAction = action;
+            const titleEl     = document.getElementById('action-modal-title');
+            const reasonGroup = document.getElementById('reason-group');
+            const submitBtn   = document.getElementById('action-submit-btn');
+
+            if (action === 'approve') {
+                titleEl.textContent = 'Approve Tutor';
+                reasonGroup.style.display = 'none';
+                submitBtn.className = 'btn btn-success';
+                submitBtn.textContent = 'Approve';
+            } else if (action === 'reject') {
+                titleEl.textContent = 'Reject Application';
+                reasonGroup.style.display = 'block';
+                submitBtn.className = 'btn btn-danger';
+                submitBtn.textContent = 'Reject';
+            } else {
+                titleEl.textContent = 'Request Revision';
+                reasonGroup.style.display = 'none';
+                submitBtn.className = 'btn btn-warning';
+                submitBtn.textContent = 'Request Revision';
+            }
+
+            document.getElementById('action-modal').classList.add('show');
+        }
+
+        function closeActionModal() {
+            document.getElementById('action-modal').classList.remove('show');
+            document.getElementById('action-form').reset();
+        }
+
+        // ── Submit action
+        document.getElementById('action-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentTutor) return;
+
+            const comments = document.getElementById('action-comments').value;
+            const reason   = document.getElementById('reject-reason').value;
+            const status   = currentAction === 'approve' ? 'APPROVED'
+                           : currentAction === 'reject'  ? 'REJECTED'
+                           : 'REVISION_REQUESTED';
+
+            try {
+                const { error } = await supabase
+                    .from('tutor_profiles')
+                    .update({ status, admin_feedback: comments + (reason ? `\n\nReason: ${reason}` : '') })
+                    .eq('id', currentTutor.id);
+
+                if (error) throw error;
+
+                alert(`Tutor status updated to: ${status}`);
+                closeActionModal();
+                closeModal();
+                loadTutors();
+            } catch (err) {
+                console.error('Update error:', err);
+                alert('Update failed: ' + err.message);
+            }
+        });
+
+        // ── Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.status;
+                loadTutors();
+            });
+        });
+
+        // ── Expose globals & init
+        window.showTutorDetails = showTutorDetails;
+        window.closeModal       = closeModal;
+        window.openActionModal  = openActionModal;
+        window.closeActionModal = closeActionModal;
+        window.viewMedia        = viewMedia;
+        window.loadTutors       = loadTutors;
+
+        loadTutors();
+    </script>
+
+    <style>
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        #loading-state i { animation: spin 1s linear infinite; }
+    </style>
+</body>
+</html>

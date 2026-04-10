@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin: Tutor Review | E-Tutor Connect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Scoped styles specifically for Review Console extending the existing admin style.css */
+        .page-header.review-header { display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; border: none; font-size: 0.875rem; transition: 0.2s;}
+        .btn-outline { background: white; border: 1px solid var(--border-color); color: var(--gray-700); }
+        .btn-outline:hover { background: var(--gray-50); }
+        .btn-success { background: var(--primary-600); color: white; }
+        .btn-success:hover { background: var(--primary-700); }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-warning:hover { background: #d97706; }
+
+        .detail-panel { background: white; border-radius: var(--radius-xl); border: 1px solid var(--border-color); padding: 2rem; margin-bottom: 2rem; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .info-group { margin-bottom: 1.5rem; }
+        .info-label { font-size: 0.875rem; color: var(--gray-500); margin-bottom: 0.5rem; font-weight: 500; }
+        .info-value { font-size: 1rem; color: var(--gray-900); }
+        .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: #fef3c7; color: #92400e;}
+        
+        .vid-container { width: 100%; aspect-ratio: 16/9; background: var(--gray-900); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: white; }
+
+        /* Modal specific */
+        dialog { border: none; border-radius: var(--radius-xl); padding: 2rem; width: 100%; max-width: 500px; margin: auto; box-shadow: var(--shadow-md); }
+        dialog::backdrop { background: rgba(0,0,0,0.5); }
+        .modal-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: var(--gray-900); }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-control { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Re-using Admin Sidebar Structure -->
+        <aside class="sidebar">
+            <div class="sidebar-header"><a href="index.html" class="logo"><div class="logo-icon"><i data-lucide="shield"></i></div><span>E-Tutor Admin</span></a></div>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-link"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
+                <a href="#" class="nav-link active"><i data-lucide="users"></i><span>Tutor Approvals</span></a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-wrapper">
+                <div class="page-header review-header">
+                    <div>
+                        <a href="#" class="btn btn-outline" style="margin-bottom: 1rem; width: fit-content;"><i data-lucide="arrow-left"></i> Back to List</a>
+                        <h1 class="page-title">Application: John Doe</h1>
+                        <p class="page-subtitle">Submitted on: Oct 24, 2026 &nbsp;&bull;&nbsp; <span class="badge">Pending</span></p>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-warning" id="btn-request"><i data-lucide="message-square"></i> Request Revision</button>
+                        <button class="btn btn-danger" id="btn-reject"><i data-lucide="x"></i> Reject</button>
+                        <button class="btn btn-success" id="btn-approve"><i data-lucide="check"></i> Approve</button>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="info-grid">
+                        <div class="left-col">
+                            <div class="info-group">
+                                <div class="info-label">Full Name</div>
+                                <div class="info-value">John Doe</div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label">Email Address</div>
+                                <div class="info-value">john.doe@example.com</div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label">Primary Subjects</div>
+                                <div class="info-value">Advanced Mathematics, Physics</div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label">Professional Experience</div>
+                                <div class="info-value" style="line-height: 1.6;">
+                                    5 years teaching high-school level Calculus and AP Physics. 
+                                    Master's degree in Applied Mathematics from University X.
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label">Attached Certificates</div>
+                                <div class="info-value">
+                                    <a href="#" style="color: var(--primary-600); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
+                                        <i data-lucide="file-text"></i> BSc_Math_Certificate.pdf
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right-col">
+                            <div class="info-group">
+                                <div class="info-label">Video Introduction</div>
+                                <div class="vid-container">
+                                    <i data-lucide="play-circle" style="width: 48px; height: 48px; opacity: 0.8; cursor: pointer;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <dialog id="action-modal">
+        <h2 class="modal-title" id="modal-title">Take Action</h2>
+        <form id="action-form">
+            <div class="form-group" id="reason-group" style="display: none;">
+                <label>Reason for Rejection</label>
+                <select class="form-control" id="reject-reason">
+                    <option>Insufficient Experience</option>
+                    <option>Invalid Certification</option>
+                    <option>Poor Interview/Video Quality</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Admin Comments (sent to Tutor)</label>
+                <textarea class="form-control" rows="4" placeholder="Enter details..." required></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('action-modal').close()">Cancel</button>
+                <button type="submit" class="btn btn-success" id="modal-submit-btn">Confirm</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script type="module">
+        import { supabase } from '../src/supabase.js';
+        lucide.createIcons();
+
+        const modal = document.getElementById('action-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const reasonGroup = document.getElementById('reason-group');
+        const submitBtn = document.getElementById('modal-submit-btn');
+
+        let currentAction = '';
+
+        // API stub function
+        async function updateTutorStatus(tutorId, status, msg) {
+            console.log(`Setting tutor ${tutorId} to ${status}. Msg: ${msg}`);
+            // await supabase.from('tutor_applications').update({ status, admin_feedback: msg }).eq('id', tutorId);
+            alert(`Tutor status successfully updated to: ${status}`);
+            window.location.reload();
+        }
+
+        document.getElementById('btn-approve').addEventListener('click', () => {
+            if(confirm("Approve tutor and send Welcome email?")) {
+                updateTutorStatus(1, 'approved', 'Welcome aboard!');
+            }
+        });
+
+        document.getElementById('btn-request').addEventListener('click', () => {
+            currentAction = 'pending';
+            modalTitle.textContent = "Request Revision";
+            reasonGroup.style.display = 'none';
+            submitBtn.className = 'btn btn-warning';
+            submitBtn.textContent = 'Send Request';
+            modal.showModal();
+        });
+
+        document.getElementById('btn-reject').addEventListener('click', () => {
+            currentAction = 'rejected';
+            modalTitle.textContent = "Reject Application";
+            reasonGroup.style.display = 'block';
+            submitBtn.className = 'btn btn-danger';
+            submitBtn.textContent = 'Confirm Rejection';
+            modal.showModal();
+        });
+
+        document.getElementById('action-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const msg = e.target.querySelector('textarea').value;
+            updateTutorStatus(1, currentAction, msg);
+            modal.close();
+        });
+    </script>
+</body>
+</html>

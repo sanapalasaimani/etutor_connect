@@ -1,0 +1,136 @@
+/* Advanced Tutor Portal Scaling (Style Updates) */
+.tutor-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+.status-draft { background: #f3f4f6; color: #6b7280; }
+.status-live { background: #ecfdf5; color: #059669; }
+.status-scheduled { background: #eff6ff; color: #3b82f6; }
+
+/* Curriculum Builder UI */
+.curriculum-module {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+.module-header {
+    background: #f9fafb;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+}
+.lesson-item {
+    padding: 10px 16px;
+    border-bottom: 1px dashed #f3f4f6;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.lesson-item:hover {
+    background: #fcfcfc;
+}
+
+
+
+/* Drag and Drop Simple Sort */
+.draggable { cursor: grab; }
+.draggable:active { cursor: grabbing; }
+
+/* Profile Dropdown Styling */
+#profile-dropdown {
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#profile-dropdown a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#profile-dropdown button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    text-align: left;
+    width: 100%;
+}
+
+/* Logout button hover effects */
+.bg-red-50:hover {
+    background-color: #fee2e2 !important;
+}
+
+/* Animations */
+.animate-fadeIn {
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slideUp {
+    animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Scrollbar for modern feel */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+}
+
+/* Modal scale animation */
+.scale-100 {
+    transform: scale(1);
+    transition: transform 0.2s ease-out;
+}
+
+/* Status Badge refinement */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+}
