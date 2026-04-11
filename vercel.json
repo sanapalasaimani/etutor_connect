@@ -3,6 +3,34 @@
         {
             "src": "/",
             "dest": "/index.html"
+        },
+        {
+            "src": "/login",
+            "dest": "/login.html"
+        },
+        {
+            "src": "/signup",
+            "dest": "/signup.html"
+        },
+        {
+            "src": "/blocked",
+            "dest": "/blocked.html"
+        },
+        {
+            "src": "/update-password",
+            "dest": "/update-password.html"
+        },
+        {
+            "src": "/student",
+            "dest": "/student/index.html"
+        },
+        {
+            "src": "/tutor",
+            "dest": "/tutor/index.html"
+        },
+        {
+            "src": "/admin",
+            "dest": "/admin/index.html"
         }
     ]
 }
