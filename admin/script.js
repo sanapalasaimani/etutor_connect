@@ -451,7 +451,7 @@ async function loadPendingTutors() {
                 </div>
             </td>
             <td>
-                <a href="tutor-review.html?user_id=${tutor.user_id}" class="btn btn-sm btn-success" style="background:var(--primary-600); text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
+                <a href="/admin/tutor-review.html?user_id=${tutor.user_id}" class="btn btn-sm btn-success" style="background:var(--primary-600); text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
                     <i data-lucide="eye" style="width:14px; height:14px;"></i>
                     Review Application
                 </a>

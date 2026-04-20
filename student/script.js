@@ -482,7 +482,7 @@ function debounce(func, wait) {
 }
 
 window.viewCourseContent = (courseId) => {
-    window.location.href = `learning.html?id=${courseId}`;
+    window.location.href = `/student/learning.html?id=${courseId}`;
 };
 
 window.showSection = showSection;

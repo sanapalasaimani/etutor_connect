@@ -44,25 +44,25 @@
         <!-- Re-using Admin Sidebar Structure -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <a href="index.html" class="logo">
+                <a href="/admin/index.html" class="logo">
                     <div class="logo-icon"><i data-lucide="shield"></i></div>
                     <span>Admin Panel</span>
                 </a>
             </div>
             <nav class="sidebar-nav">
-                <a href="index.html" class="nav-link">
+                <a href="/admin/index.html" class="nav-link">
                     <i data-lucide="layout-dashboard"></i>
                     <span>Overview</span>
                 </a>
-                <a href="tutor-approvals.html" class="nav-link active">
+                <a href="/admin/index.html#pending" class="nav-link active">
                     <i data-lucide="user-check"></i>
                     <span>Tutor Approvals</span>
                 </a>
-                <a href="index.html#manage-users" class="nav-link">
+                <a href="/admin/index.html#manage-users" class="nav-link">
                     <i data-lucide="users"></i>
                     <span>Manage Users</span>
                 </a>
-                <a href="index.html#payments" class="nav-link">
+                <a href="/admin/index.html#payments" class="nav-link">
                     <i data-lucide="credit-card"></i>
                     <span>Payments</span>
                 </a>
@@ -78,7 +78,7 @@
             <div class="content-wrapper">
                 <div class="page-header review-header">
                     <div>
-                        <a href="tutor-approvals.html" class="btn btn-outline" style="margin-bottom: 1rem; width: fit-content;"><i data-lucide="arrow-left"></i> Back to Approvals</a>
+                        <a href="/admin/index.html" class="btn btn-outline" style="margin-bottom: 1rem; width: fit-content;"><i data-lucide="arrow-left"></i> Back to Dashboard</a>
                         <h1 class="page-title" id="display-name">Loading Application...</h1>
                         <p class="page-subtitle">Submitted on: <span id="display-date">—</span> &nbsp;&bull;&nbsp; <span id="display-status-badge"></span></p>
                     </div>
@@ -200,7 +200,7 @@
 
         if (!userId) {
             alert('No tutor selected for review.');
-            window.location.href = 'tutor-approvals.html';
+            window.location.href = '/admin/index.html';
         }
 
         async function initReview() {
@@ -213,7 +213,7 @@
             if (error || !tutor) {
                 console.error(error);
                 alert('Tutor profile not found.');
-                window.location.href = 'tutor-approvals.html';
+                window.location.href = '/admin/index.html';
                 return;
             }
 
@@ -337,7 +337,7 @@
                 });
 
                 alert(`Status successfully updated to ${status}`);
-                window.location.href = 'tutor-approvals.html';
+                window.location.href = '/admin/index.html';
             } catch (err) {
                 alert('Update failed: ' + err.message);
             }
