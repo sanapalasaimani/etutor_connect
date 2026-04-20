@@ -154,16 +154,16 @@ function showApprovalGate(status, feedback, user) {
                         Enter Dashboard
                     </button>` :
                   status === 'rejected' ? 
-                    `<a href="/login.html" class="block w-full bg-red-500 text-white px-6 py-2 font-semibold hover:bg-red-600">
-                        Return to Login
-                    </a>` :
+                    `<button onclick="handleLogout()" class="w-full bg-red-500 text-white px-6 py-2 font-semibold hover:bg-red-600">
+                        Return to Home
+                    </button>` :
                     `<div class="space-y-3">
                         <button onclick="checkApprovalStatus()" class="w-full bg-green-500 text-white px-6 py-2 font-semibold hover:bg-green-600">
                             Check Status
                         </button>
-                        <a href="/login.html" class="block w-full bg-gray-200 text-gray-700 px-6 py-2 font-semibold hover:bg-gray-300">
+                        <button onclick="handleLogout()" class="w-full bg-gray-200 text-gray-700 px-6 py-2 font-semibold hover:bg-gray-300">
                             Logout
-                        </a>
+                        </button>
                     </div>`
                 }
             </div>
@@ -599,7 +599,7 @@ window.handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) throw error;
         localStorage.clear();
-        window.location.href = '/login.html';
+        window.location.href = '/';
     } catch (error) {
         console.error('Error logging out:', error);
         alert('Error logging out: ' + error.message);

@@ -1,19 +1,10 @@
 {
+  "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
-    }
+  "rewrites": [
+    { "source": "/tutor/(.*)", "destination": "/tutor/index.html" },
+    { "source": "/student/(.*)", "destination": "/student/index.html" },
+    { "source": "/admin/(.*)", "destination": "/admin/index.html" }
   ]
 }
