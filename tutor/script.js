@@ -473,6 +473,7 @@ async function loadNotifications() {
         .from('notifications')
         .select('*')
         .eq('user_id', currentTutorId)
+        .eq('is_read', false)
         .order('created_at', { ascending: false });
 
     if (error) return list.innerHTML = '<div class="p-4 text-red-500 text-xs">Error loading notifications</div>';
@@ -491,23 +492,89 @@ async function loadNotifications() {
         return;
     }
 
-    list.innerHTML = notifications.map(n => `
-        <div class="p-6 bg-white border border-gray-100 shadow-sm flex items-start gap-4 transition hover:border-emerald-100 ${n.is_read ? 'opacity-60' : ''}">
-            <div class="w-10 h-10 bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                <i data-lucide="${n.title.toLowerCase().includes('comment') ? 'message-square' : 'bell'}" class="w-5 h-5"></i>
-            </div>
-            <div class="flex-1">
-                <div class="flex justify-between items-start">
-                    <h4 class="text-sm font-black text-gray-900">${n.title}</h4>
-                    <span class="text-[9px] font-bold text-gray-300 uppercase">${new Date(n.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+    list.innerHTML = notifications.map(n => {
+        let displayMessage = n.message;
+        let courseId = '';
+        let studentId = '';
+        const match = n.message.match(/<!--COURSE:(.*?)\|STUDENT:(.*?)-->/);
+        if (match) {
+            courseId = match[1];
+            studentId = match[2];
+            displayMessage = displayMessage.replace(match[0], '');
+        } else {
+            const oldMatch = n.message.match(/<!--COURSE:(.*?)-->/);
+            if (oldMatch) {
+                courseId = oldMatch[1];
+                displayMessage = displayMessage.replace(oldMatch[0], '');
+            }
+        }
+
+        return `
+            <div class="p-6 bg-white border border-gray-100 shadow-sm flex flex-col gap-4 transition hover:border-emerald-100">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <i data-lucide="${n.title.toLowerCase().includes('comment') ? 'message-square' : 'bell'}" class="w-5 h-5"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <h4 class="text-sm font-black text-gray-900">${n.title}</h4>
+                            <span class="text-[9px] font-bold text-gray-300 uppercase">${new Date(n.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+                        </div>
+                        <p class="text-[13px] text-gray-500 mt-1 leading-relaxed whitespace-pre-wrap">${displayMessage}</p>
+                        
+                        <div class="mt-4 flex gap-3">
+                            <button onclick="markNotificationRead('${n.id}')" class="text-[10px] bg-emerald-50 text-emerald-600 px-3 py-1.5 font-bold uppercase rounded hover:bg-emerald-100 transition">Mark as Read</button>
+                            ${(courseId || studentId) ? `<button onclick="toggleReplyBox('${n.id}')" class="text-[10px] bg-gray-50 text-gray-600 px-3 py-1.5 font-bold uppercase rounded hover:bg-gray-100 transition">Reply</button>` : ''}
+                        </div>
+                    </div>
                 </div>
-                <p class="text-[13px] text-gray-500 mt-1 leading-relaxed">${n.message}</p>
-                ${!n.is_read ? '<button onclick="markNotificationRead(\'' + n.id + '\')" class="text-[10px] font-black text-emerald-600 uppercase mt-4 hover:underline">Mark as Read</button>' : ''}
+                ${(courseId || studentId) ? `
+                <!-- Reply Box -->
+                <div id="reply-box-${n.id}" class="hidden ml-14 mt-2">
+                    <textarea id="reply-input-${n.id}" class="w-full text-sm p-3 border border-gray-200 rounded outline-none focus:border-emerald-500 bg-gray-50 mb-2 h-20 resize-none" placeholder="Write a reply..."></textarea>
+                    <div class="flex justify-end">
+                        <button onclick="submitReply('${n.id}', '${courseId}', '${studentId}')" class="text-[10px] bg-emerald-600 text-white px-4 py-2 font-bold uppercase rounded hover:bg-emerald-700 transition">Post Reply</button>
+                    </div>
+                </div>
+                ` : ''}
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
     lucide.createIcons();
 }
+
+window.toggleReplyBox = (id) => {
+    const box = document.getElementById(`reply-box-${id}`);
+    if (box) {
+        box.classList.toggle('hidden');
+    }
+};
+
+window.submitReply = async (notifId, courseId, studentId) => {
+    const input = document.getElementById(`reply-input-${notifId}`);
+    const content = input.value.trim();
+    if (!content) return alert('Please enter a reply.');
+
+    if (studentId) {
+        // Reply directly to the student via notification
+        const { error: cError } = await supabase
+            .from('notifications')
+            .insert({
+                user_id: studentId,
+                title: 'Tutor Reply',
+                message: `Your tutor replied to your comment:\n\n"${content}"`
+            });
+
+        if (cError) {
+            alert("Error sending reply: " + cError.message);
+        } else {
+            alert("Reply sent directly to the student!");
+            await markNotificationRead(notifId);
+        }
+    } else {
+        alert("Cannot reply directly to this student (missing student ID from old notification format).");
+    }
+};
 
 window.markNotificationRead = async (id) => {
     await supabase.from('notifications').update({ is_read: true }).eq('id', id);

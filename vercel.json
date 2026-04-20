@@ -1,36 +1,19 @@
 {
-    "routes": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
         {
-            "src": "/",
-            "dest": "/index.html"
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
         },
         {
-            "src": "/login",
-            "dest": "/login.html"
-        },
-        {
-            "src": "/signup",
-            "dest": "/signup.html"
-        },
-        {
-            "src": "/blocked",
-            "dest": "/blocked.html"
-        },
-        {
-            "src": "/update-password",
-            "dest": "/update-password.html"
-        },
-        {
-            "src": "/student",
-            "dest": "/student/index.html"
-        },
-        {
-            "src": "/tutor",
-            "dest": "/tutor/index.html"
-        },
-        {
-            "src": "/admin",
-            "dest": "/admin/index.html"
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
         }
-    ]
+      ]
+    }
+  ]
 }

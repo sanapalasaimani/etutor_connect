@@ -57,6 +57,10 @@
                     <p class="text-gray-400 text-xs mt-0.5" id="header-subtitle">Discover top-rated courses and expert tutors</p>
                 </div>
                 <div class="flex items-center gap-6">
+                    <button class="relative text-gray-400 hover:text-emerald-600 transition" onclick="window.showSection('section-notifications')">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                        <span id="student-notification-badge" class="absolute -top-0.5 -right-0.5 w-[14px] h-[14px] bg-red-500 text-white text-[8px] font-bold flex items-center justify-center rounded-full hidden">0</span>
+                    </button>
                     <div class="flex items-center gap-3">
                         <div class="text-right hidden sm:block">
                             <p class="text-sm font-bold m-0 leading-none" id="student-name">Loading...</p>
@@ -83,6 +87,7 @@
                             <option value="all">All Learning Types</option>
                             <option value="Self-Paced">Self-Paced Video</option>
                             <option value="Live-Cohort">Live Cohorts</option>
+                            <option value="Live Classes">Live Classes</option>
                         </select>
                     </div>
 
@@ -115,6 +120,19 @@
                 <div id="section-achievements" class="section-view hidden animate-fadeIn">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="achievements-grid">
                         <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div id="section-notifications" class="section-view hidden animate-fadeIn">
+                    <div class="max-w-3xl bg-white border border-gray-100 rounded-[32px] p-8 shadow-sm">
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="text-xl font-bold">Inbox & Notifications</h3>
+                            <button onclick="window.markAllStudentNotificationsAsRead()" class="text-xs font-bold text-emerald-600 hover:underline">Mark all as read</button>
+                        </div>
+                        <div id="student-notifications-list" class="space-y-4">
+                            <p class="text-gray-400 text-sm">Loading...</p>
+                        </div>
                     </div>
                 </div>
 
@@ -152,6 +170,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <!-- Course Detail Modal -->
+    <div id="course-detail-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
     </div>
 
     <script type="module" src="script.js"></script>

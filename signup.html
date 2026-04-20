@@ -61,36 +61,24 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2 mt-4">What's your primary goal?</label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition hover:border-primary-200 peer-checked">
-                    <input type="radio" name="role" value="student" class="peer sr-only" checked>
-                    <div class="flex w-full items-center justify-between">
-                      <div class="flex items-center">
-                        <div class="text-sm">
-                          <p class="font-medium text-gray-900 border-b-2 border-transparent peer-checked:border-primary-500 pb-1">I want to learn 🎓</p>
-                          <div class="text-gray-500 mt-1 text-xs">Browse courses & find tutors</div>
-                        </div>
-                      </div>
-                      <div class="h-5 w-5 rounded-full border border-gray-300 bg-white flex items-center justify-center peer-checked:border-primary-500 peer-checked:bg-primary-500 transition-colors">
-                          <svg class="w-3 h-3 text-white hidden peer-checked:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                  <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition hover:border-primary-200">
+                    <div class="flex w-full items-center gap-4">
+                      <input type="radio" name="role" value="student" class="w-5 h-5 text-primary-600 focus:ring-primary-500 border-gray-300 cursor-pointer" checked>
+                      <div class="text-sm">
+                        <p class="font-medium text-gray-900 pb-1 leading-none">I want to learn 🎓</p>
+                        <div class="text-gray-500 text-xs">Browse courses & find tutors</div>
                       </div>
                     </div>
-                    <div class="absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-primary-500 pointer-events-none" aria-hidden="true"></div>
                   </label>
 
                   <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition hover:border-primary-200">
-                    <input type="radio" name="role" value="tutor" class="peer sr-only">
-                    <div class="flex w-full items-center justify-between">
-                      <div class="flex items-center">
-                        <div class="text-sm">
-                          <p class="font-medium text-gray-900 border-b-2 border-transparent peer-checked:border-primary-500 pb-1">I want to teach 👩‍🏫</p>
-                          <div class="text-gray-500 mt-1 text-xs">Share knowledge & earn</div>
-                        </div>
+                    <div class="flex w-full items-center gap-4">
+                      <input type="radio" name="role" value="tutor" class="w-5 h-5 text-primary-600 focus:ring-primary-500 border-gray-300 cursor-pointer">
+                      <div class="text-sm">
+                        <p class="font-medium text-gray-900 pb-1 leading-none">I want to teach 👩‍🏫</p>
+                        <div class="text-gray-500 text-xs">Share knowledge & earn</div>
                       </div>
-                       <div class="h-5 w-5 rounded-full border border-gray-300 bg-white flex items-center justify-center peer-checked:border-primary-500 peer-checked:bg-primary-500 transition-colors">
-                           <svg class="w-3 h-3 text-white hidden peer-checked:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
-                       </div>
                     </div>
-                    <div class="absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-primary-500 pointer-events-none" aria-hidden="true"></div>
                   </label>
                 </div>
               </div>
@@ -398,7 +386,7 @@
                 const headline = document.getElementById('headline').value;
                 const bio = document.getElementById('bio').value;
                 const category = document.getElementById('category').value;
-                const linkedin = document.getElementById('linkedin').value || 'NA';
+                const linkedin = document.getElementById('linkedin').value || '';
                 const videoUrl = document.getElementById('video_url').value;
                 const certsUrl = document.getElementById('certs_url').value;
                 const profilePhotoFile = document.getElementById('profile_photo').files[0];

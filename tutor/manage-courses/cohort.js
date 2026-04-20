@@ -49,7 +49,7 @@ export async function renderCohortView(containerId) {
             cohort_days: [],
             start_time: '',
             end_time: '',
-            modules: [] // { title, live_link, video_url }
+            modules: [] // { title, live_link, video_url, materials_url }
         },
         openCreateModal: function() {
             if (!window.verifyPayoutDetails()) return;
@@ -109,8 +109,9 @@ export async function renderCohortView(containerId) {
             const title = document.getElementById('cohort-mod-title').value;
             const live = document.getElementById('cohort-mod-live').value;
             const record = document.getElementById('cohort-mod-record').value;
+            const materials = document.getElementById('cohort-mod-materials').value;
             if (title && live) {
-                this.formData.modules.push({ title, live_link: live, video_url: record });
+                this.formData.modules.push({ title, live_link: live, video_url: record, materials_url: materials });
                 this.renderModal();
             } else {
                 alert('Title and Live Link are required');
@@ -133,7 +134,8 @@ export async function renderCohortView(containerId) {
                 modules: course.modules.sort((a,b) => a.order_index - b.order_index).map(m => ({
                     title: m.title,
                     live_link: m.notes_url,
-                    video_url: m.video_url
+                    video_url: m.video_url,
+                    materials_url: m.materials_url || ''
                 }))
             };
             this.step = 1;
@@ -175,6 +177,7 @@ export async function renderCohortView(containerId) {
                         title: m.title,
                         video_url: m.video_url,
                         notes_url: m.live_link,
+                        materials_url: m.materials_url || null,
                         order_index: i
                     }));
                     await supabase.from('modules').insert(moduleData);
@@ -241,14 +244,18 @@ export async function renderCohortView(containerId) {
                         <h3 class="font-bold text-gray-800">Add Live Session Modules</h3>
                         <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
                             <input id="cohort-mod-title" type="text" placeholder="Session Title (e.g., Intro to Hooks)" class="w-full p-2 border border-gray-200 rounded-lg outline-none focus:border-green-600">
-                            <input id="cohort-mod-live" type="url" placeholder="Live Meet Link (e.g., Google Meet)" class="w-full p-2 border border-gray-200 rounded-lg outline-none focus:border-green-600">
+                            <input id="cohort-mod-live" type="url" placeholder="Live Meet Link (e.g., Google Meet) *" class="w-full p-2 border border-gray-200 rounded-lg outline-none focus:border-green-600">
+                            <input id="cohort-mod-materials" type="url" placeholder="Materials / Drive Link (Optional)" class="w-full p-2 border border-gray-200 rounded-lg outline-none focus:border-blue-600">
                             <input id="cohort-mod-record" type="url" placeholder="Recording URL (Optional)" class="w-full p-2 border border-gray-200 rounded-lg outline-none focus:border-green-600">
                             <button onclick="window.cohortState.addModule()" class="w-full bg-green-900 text-white font-bold py-2 rounded-lg hover:bg-black transition">Add Session</button>
                         </div>
                         <div class="space-y-2">
                             ${this.formData.modules.map((m, i) => `
                                 <div class="p-3 bg-white border border-gray-100 rounded-lg shadow-sm flex justify-between items-center">
-                                    <span class="text-xs font-bold text-gray-800">${i+1}. ${m.title}</span>
+                                    <div>
+                                        <span class="text-xs font-bold text-gray-800">${i+1}. ${m.title}</span>
+                                        ${m.materials_url ? '<span class="ml-2 text-[9px] font-bold text-blue-500 uppercase">📎 Materials</span>' : ''}
+                                    </div>
                                     <button onclick="window.cohortState.formData.modules.splice(${i}, 1); window.cohortState.renderModal()" class="text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </div>
                             `).join('')}
@@ -290,6 +297,80 @@ export async function renderCohortView(containerId) {
             `;
             document.getElementById('cohort-modal-container').innerHTML = modalHtml;
             window.getThumbnailUrl = getThumbnailUrl; // Expose for oninput
+            lucide.createIcons();
+        },
+        runCohortClass: async function(courseId) {
+            const { data: course, error } = await supabase.from('courses').select('*, modules(*)').eq('id', courseId).single();
+            if (error) return alert('Error fetching cohort data');
+            
+            const modules = course.modules.sort((a,b) => a.order_index - b.order_index);
+            
+            const modalHtml = `
+                <div class="fixed inset-0 bg-white flex flex-col z-[100] font-sans h-screen w-screen">
+                    <div class="flex items-center justify-between px-8 py-5 border-b border-gray-100">
+                        <div>
+                            <h2 class="text-xl font-black text-gray-900">${course.title}</h2>
+                            <p class="text-xs text-gray-400 mt-1">${course.cohort_days?.join(', ') || ''} • ${course.start_time?.slice(0,5) || ''} - ${course.end_time?.slice(0,5) || ''}</p>
+                        </div>
+                        <button onclick="window.cohortState.closeModal()" class="text-gray-400 hover:text-gray-900 transition p-2 hover:bg-gray-100"><i data-lucide="x" class="w-6 h-6"></i></button>
+                    </div>
+                    <div class="flex-1 flex overflow-hidden">
+                        <div class="w-72 bg-gray-50 border-r border-gray-100 p-6 overflow-y-auto hidden md:block">
+                            <h3 class="text-gray-400 text-[10px] font-black mb-4 tracking-widest uppercase">Sessions</h3>
+                            ${modules.map((m, i) => `
+                                <div class="mb-2">
+                                    <button onclick="window.cohortState.startMeet('${m.notes_url}', '${m.title.replace(/'/g, "\\'")}')" class="w-full text-left p-4 border border-gray-200 bg-white hover:border-emerald-500 hover:bg-emerald-50 transition text-sm group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 bg-emerald-50 text-emerald-600 flex items-center justify-center text-[10px] font-black shrink-0">${(i+1).toString().padStart(2,'0')}</div>
+                                            <div class="font-bold text-gray-800 truncate group-hover:text-emerald-700">${m.title}</div>
+                                        </div>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div id="meet-container" class="flex-1 bg-white flex items-center justify-center p-8">
+                            <div class="text-center">
+                                <div class="w-20 h-20 bg-gray-50 flex items-center justify-center mx-auto mb-6 border border-gray-100">
+                                    <i data-lucide="video" class="w-10 h-10 text-gray-300"></i>
+                                </div>
+                                <p class="text-gray-400 text-sm">Select a session from the left to launch Google Meet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('cohort-modal-container').innerHTML = modalHtml;
+            lucide.createIcons();
+            
+            // Automatically select first if available
+            if (modules.length > 0 && modules[0].notes_url) {
+                 this.startMeet(modules[0].notes_url, modules[0].title);
+            }
+        },
+        startMeet: function(url, title) {
+            const container = document.getElementById('meet-container');
+            if (!url) {
+                container.innerHTML = '<div class="text-gray-400 text-sm">No meet link provided for this session.</div>';
+                return;
+            }
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center text-center w-full max-w-lg mx-auto">
+                    <div class="w-24 h-24 bg-emerald-50 flex items-center justify-center mb-8 border border-emerald-100">
+                        <i data-lucide="video" class="w-12 h-12 text-emerald-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-2">${title || 'Live Session'}</h3>
+                    <p class="text-sm text-gray-500 mb-8 max-w-sm">Click the button below to open Google Meet. All enrolled students can join this session.</p>
+                    <a href="${url}" target="_blank" class="inline-flex items-center gap-3 bg-emerald-600 text-white font-bold px-10 py-4 hover:bg-emerald-700 transition shadow-lg shadow-emerald-200 text-sm mb-6">
+                        <i data-lucide="video" class="w-5 h-5"></i>
+                        Start Google Meet
+                        <i data-lucide="external-link" class="w-4 h-4 opacity-60"></i>
+                    </a>
+                    <div class="flex items-center gap-2 text-xs text-gray-400 bg-gray-50 px-5 py-3 border border-gray-100">
+                        <i data-lucide="message-circle" class="w-4 h-4 text-blue-400 shrink-0"></i>
+                        <span>Use the <strong class="text-gray-600">Google Meet chat</strong> inside the meeting for live Q&A</span>
+                    </div>
+                </div>
+            `;
             lucide.createIcons();
         }
     };
@@ -335,7 +416,10 @@ async function loadCohorts(tutorId) {
                             </div>
                         </div>
                     </div>
-                    <button onclick="window.cohortState.editCohort('${c.id}')" class="text-gray-400 hover:text-green-600 transition opacity-0 group-hover:opacity-100"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
+                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition">
+                        <button onclick="window.cohortState.runCohortClass('${c.id}')" class="text-white bg-emerald-600 hover:bg-emerald-700 transition px-3 py-1.5 text-xs font-bold flex items-center gap-1.5"><i data-lucide="video" class="w-3.5 h-3.5"></i> Run Class</button>
+                        <button onclick="window.cohortState.editCohort('${c.id}')" class="text-gray-400 hover:text-green-600 transition"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
+                    </div>
                 </div>
             `).join('')}
         </div>

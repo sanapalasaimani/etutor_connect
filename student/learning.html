@@ -16,13 +16,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .module-item.active { background-color: #ecfdf5; border-color: #10b981; }
-        .glass-header { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.8); }
-        .bg-player { background: #000; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .glass-header { backdrop-filter: blur(10px); background: rgba(236, 253, 245, 0.8); }
+        .bg-player { background: #064e3b; box-shadow: 0 25px 50px -12px rgba(6, 78, 59, 0.5); }
     </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-800">
+<body class="bg-emerald-50 text-emerald-950">
     <!-- Top Nav -->
-    <header class="glass-header border-b border-gray-100 px-8 py-4 flex justify-between items-center h-20 sticky top-0 z-[100]">
+    <header class="glass-header border-b border-emerald-200 px-8 py-4 flex justify-between items-center h-20 sticky top-0 z-[100]">
         <div class="flex items-center gap-6">
             <button onclick="location.href='index.html'" class="w-10 h-10 rounded-2xl bg-white border flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:border-emerald-200 transition shadow-sm">
                 <i data-lucide="arrow-left" class="w-5 h-5"></i>
@@ -51,14 +51,14 @@
             
             <!-- Left Side: Video Player (Scaler Style) -->
             <div class="lg:col-span-2 space-y-6">
-                <div class="relative pt-[56.25%] bg-black rounded-[40px] overflow-hidden shadow-2xl border-4 border-white" id="video-container">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-white/20 bg-emerald-950/10">
+                <div class="relative pt-[56.25%] bg-emerald-950 rounded-[40px] overflow-hidden shadow-2xl border-4 border-emerald-100" id="video-container">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-emerald-100/20 bg-emerald-900/40">
                         <i data-lucide="play-circle" class="w-20 h-20 opacity-10 mb-4"></i>
                         <p class="font-black uppercase tracking-[0.2em] text-sm opacity-10">Select a lesson to begin</p>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-[40px] p-10 border border-gray-100 shadow-sm">
+                <div class="bg-white/80 rounded-[40px] p-10 border border-emerald-800 shadow-sm">
                     <div class="flex justify-between items-start mb-8">
                         <div>
                             <span id="current-lesson-tag" class="text-[10px] font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full uppercase tracking-widest border border-emerald-100">Module 01</span>
@@ -73,7 +73,7 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-8 border-t border-gray-50">
                         <!-- Dedicated Video Link Section -->
-                        <div class="p-6 rounded-3xl bg-emerald-50/50 border border-emerald-100 group">
+                        <div class="p-6 rounded-3xl bg-emerald-50/50 border border-emerald-800 group">
                             <h4 class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-3">Primary Video Link</h4>
                             <div id="video-link-container" class="flex items-center justify-between">
                                 <p class="text-xs text-gray-400 italic">No video selected</p>
@@ -81,7 +81,7 @@
                         </div>
                         
                         <!-- Dedicated Materials Section -->
-                        <div class="p-6 rounded-3xl bg-blue-50/50 border border-blue-100 group">
+                        <div class="p-6 rounded-3xl bg-blue-50/50 border border-emerald-800 group">
                             <h4 class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-3">Lesson Materials</h4>
                             <div id="materials-link-container" class="flex items-center justify-between">
                                 <p class="text-xs text-gray-400 italic">No resources available</p>
@@ -89,7 +89,7 @@
                         </div>
 
                         <!-- Dedicated Quiz Section -->
-                        <div id="quiz-section-container" class="p-6 bg-purple-50/50 border border-purple-100 group hidden">
+                        <div id="quiz-section-container" class="p-6 bg-purple-50/50 border border-emerald-800 group hidden">
                             <h4 class="text-[10px] font-black text-purple-600 uppercase tracking-widest mb-3">Module Quiz</h4>
                             <div id="quiz-link-container" class="flex items-center justify-between">
                                 <button onclick="window.openQuizModal()" class="flex items-center gap-2 text-xs font-black text-purple-600 hover:text-purple-700 transition">
@@ -114,7 +114,7 @@
                         </div>
                         
                         <!-- Post Comment -->
-                        <div class="mb-8 border border-gray-100 p-6 bg-white">
+                        <div class="mb-8 border border-emerald-800 p-6 bg-white">
                             <textarea id="comment-input" placeholder="Have a question or want to share a thought?" class="w-full p-4 border border-gray-100 outline-none focus:border-emerald-500 text-sm mb-4 resize-none h-24 transition"></textarea>
                             <div class="flex justify-end">
                                 <button id="post-comment-btn" class="bg-gray-900 text-white px-8 py-3 text-xs font-black hover:bg-emerald-600 transition shadow-lg shadow-gray-200">
@@ -133,8 +133,8 @@
 
             <!-- Right Side: Course Curriculum -->
             <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-12rem)] sticky top-28">
-                    <div class="p-8 border-b bg-gray-50/50">
+                <div class="bg-white/80 rounded-[40px] border border-emerald-800 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-12rem)] sticky top-28">
+                    <div class="p-8 border-b border-emerald-800 bg-emerald-50/50">
                         <h3 class="text-lg font-black text-gray-900">Course Curriculum</h3>
                         <p id="module-count" class="text-[11px] font-bold text-gray-400 mt-1 uppercase">0 Modules</p>
                     </div>

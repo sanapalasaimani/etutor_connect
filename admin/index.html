@@ -156,13 +156,7 @@
         <main class="main-content" id="main-content">
             <header class="top-header">
                 <div class="header-left">
-                    <button class="icon-btn" id="sidebar-toggle-btn">
-                        <i data-lucide="menu"></i>
-                    </button>
-                    <div class="search-bar">
-                        <i data-lucide="search" class="search-icon"></i>
-                        <input type="text" placeholder="Search..." class="search-input">
-                    </div>
+                    <!-- Global search & menu toggle removed -->
                 </div>
                 <div class="header-right">
                     <button class="profile-trigger" id="profile-trigger">
@@ -260,18 +254,24 @@
                         <p class="page-subtitle">Select a user type to view profiles, then click any row to view details, block, or unblock.</p>
                     </div>
 
-                    <!-- Role Selector Tabs -->
-                    <div class="role-tabs">
-                        <button class="role-tab active" id="tab-students" onclick="switchUserTab('student')">
-                            <i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>
-                            Students
-                            <span class="tab-count" id="count-students">0</span>
-                        </button>
-                        <button class="role-tab" id="tab-tutors" onclick="switchUserTab('tutor')">
-                            <i data-lucide="book-open" style="width:16px;height:16px;"></i>
-                            Tutors
-                            <span class="tab-count" id="count-tutors">0</span>
-                        </button>
+                    <!-- Role Selector Tabs & Search -->
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+                        <div class="role-tabs" style="margin-bottom:0;">
+                            <button class="role-tab active" id="tab-students" onclick="switchUserTab('student')">
+                                <i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>
+                                Students
+                                <span class="tab-count" id="count-students">0</span>
+                            </button>
+                            <button class="role-tab" id="tab-tutors" onclick="switchUserTab('tutor')">
+                                <i data-lucide="book-open" style="width:16px;height:16px;"></i>
+                                Tutors
+                                <span class="tab-count" id="count-tutors">0</span>
+                            </button>
+                        </div>
+                        <div class="search-bar" style="background:white; border:1px solid var(--border-color); border-radius:10px; padding:0 0.75rem; display:flex; align-items:center; max-width:300px; width:100%;">
+                            <i data-lucide="search" style="color:var(--gray-400); width:18px; height:18px;"></i>
+                            <input type="text" id="users-search-input" placeholder="Search users by name or email..." style="border:none; outline:none; padding:0.6rem 0.5rem; width:100%; font-size:0.875rem;">
+                        </div>
                     </div>
 
                     <div style="background: white; border-radius: var(--radius-xl); padding: 1.5rem; border: 1px solid var(--border-color);">

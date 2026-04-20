@@ -57,7 +57,73 @@ function initDashboard() {
 
     // Initial Load
     showSection('section-explore');
+    loadStudentNotifications();
 }
+
+async function loadStudentNotifications() {
+    const list = document.getElementById('student-notifications-list');
+    const badge = document.getElementById('student-notification-badge');
+
+    const { data: notifications, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .eq('is_read', false)
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        if(list) list.innerHTML = '<p class="text-red-500 text-sm">Failed to load notifications.</p>';
+        return;
+    }
+
+    if (notifications && notifications.length > 0) {
+        badge.textContent = notifications.length;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+
+    if (!notifications || notifications.length === 0) {
+        list.innerHTML = `
+            <div class="py-12 text-center text-gray-400">
+                <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-3 text-gray-200"></i>
+                <p class="font-bold">Inbox is empty</p>
+                <p class="text-xs mt-1">You have no new messages or replies.</p>
+            </div>
+        `;
+        lucide.createIcons();
+        return;
+    }
+
+    list.innerHTML = notifications.map(n => `
+        <div class="p-6 bg-white border border-gray-100 rounded-[20px] shadow-sm flex flex-col gap-3">
+            <div class="flex justify-between items-start">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900 leading-tight">${n.title}</h4>
+                        <span class="text-[10px] font-bold text-gray-400">${new Date(n.created_at).toLocaleDateString()}</span>
+                    </div>
+                </div>
+                <button onclick="window.markStudentNotificationRead('${n.id}')" class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded hover:bg-emerald-100 transition">Mark as Read</button>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap ml-14">${n.message}</p>
+        </div>
+    `).join('');
+    lucide.createIcons();
+}
+
+window.markStudentNotificationRead = async (id) => {
+    await supabase.from('notifications').update({ is_read: true }).eq('id', id);
+    loadStudentNotifications();
+};
+
+window.markAllStudentNotificationsAsRead = async () => {
+    await supabase.from('notifications').update({ is_read: true }).eq('user_id', currentUser.id);
+    loadStudentNotifications();
+};
 
 async function showSection(sectionId) {
     document.querySelectorAll('.section-view').forEach(s => s.classList.add('hidden'));
@@ -78,7 +144,8 @@ async function showSection(sectionId) {
         'section-explore': ['Explore Courses', 'Discover top-rated courses and expert tutors'],
         'section-learning': ['My Learning', 'Continue your educational journey'],
         'section-sessions': ['Live Sessions', 'Manage your upcoming 1-on-1 classes'],
-        'section-achievements': ['My Achievements', 'Celebrated milestones and completed courses']
+        'section-achievements': ['My Achievements', 'Celebrated milestones and completed courses'],
+        'section-notifications': ['Inbox & Replies', 'Direct messages and updates from your tutors']
     };
     if (titles[sectionId]) {
         document.getElementById('header-title').textContent = titles[sectionId][0];
@@ -102,7 +169,7 @@ async function loadExploreCourses() {
     const { data: myEnrollments } = await supabase.from('student_progress').select('course_id').eq('student_id', currentUser.id);
     const enrolledIds = new Set(myEnrollments?.map(e => e.course_id) || []);
 
-    let query = supabase.from('courses').select('*, profiles(first_name, last_name)').eq('status', 'Live');
+    let query = supabase.from('courses').select('*, profiles(first_name, last_name)').in('status', ['Live', 'Scheduled']);
     if (filter !== 'all') query = query.eq('course_type', filter);
 
     const { data: courses, error } = await query;
@@ -123,10 +190,13 @@ async function loadExploreCourses() {
 
         return `
             <div class="course-card bg-white rounded-[32px] overflow-hidden border border-gray-100 shadow-sm transition-all duration-300">
-                <div class="relative h-48 overflow-hidden group">
+                <div class="relative h-48 overflow-hidden group cursor-pointer" onclick="window.openCourseDetail('${c.id}')">
                     <img src="${getThumbnailUrl(c.thumbnail_url)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                     <div class="absolute top-4 left-4">
                         <span class="${c.course_type === 'Self-Paced' ? 'badge-self' : 'badge-cohort'}">${c.course_type}</span>
+                    </div>
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <span class="bg-white/90 text-gray-900 px-4 py-2 rounded-full text-xs font-bold shadow">View Details</span>
                     </div>
                 </div>
                 <div class="p-6">
@@ -134,7 +204,8 @@ async function loadExploreCourses() {
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${c.profiles?.first_name} ${c.profiles?.last_name}</span>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-2 leading-tight">${c.title}</h3>
-                    <p class="text-sm text-gray-500 line-clamp-2 mb-4">${c.description || 'No description available.'}</p>
+                    <p class="text-sm text-gray-500 line-clamp-2 mb-3">${c.description || 'No description available.'}</p>
+                    <button onclick="window.openCourseDetail('${c.id}')" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition mb-4 inline-block">Read more →</button>
                     <div class="flex items-center justify-between pt-4 border-t border-gray-50">
                         <span class="text-xl font-black text-emerald-600">₹${c.price || 0}</span>
                         <button onclick="${btnAction}" class="${btnClass}">${btnText}</button>
@@ -197,10 +268,10 @@ async function loadMyLearning() {
             </div>
             <div class="p-6">
                 <h3 class="text-base font-bold text-gray-900 mb-4 leading-tight">${c.title}</h3>
-                <div class="flex items-center gap-2 mb-4 bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
+                ${c.demo_video_url ? `<div class="flex items-center gap-2 mb-4 bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
                     <i data-lucide="external-link" class="w-4 h-4 text-emerald-600"></i>
                     <a href="${c.demo_video_url}" target="_blank" class="text-[11px] font-bold text-emerald-700 hover:underline">Watch Course Demo</a>
-                </div>
+                </div>` : ''}
                 <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden mb-2">
                     <div class="bg-emerald-500 h-full" style="width: 0%"></div>
                 </div>
@@ -416,6 +487,144 @@ window.viewCourseContent = (courseId) => {
 
 window.showSection = showSection;
 
+window.openCourseDetail = async (courseId) => {
+    const modal = document.getElementById('course-detail-modal');
+    modal.innerHTML = '<div class="flex items-center justify-center w-full h-full"><p class="text-white text-sm font-bold">Loading...</p></div>';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    const { data: course, error } = await supabase
+        .from('courses')
+        .select('*, profiles(first_name, last_name), modules(count)')
+        .eq('id', courseId)
+        .single();
+
+    if (error || !course) {
+        modal.innerHTML = '<div class="text-red-400">Failed to load course</div>';
+        return;
+    }
+
+    const { data: myEnrollments } = await supabase.from('student_progress').select('course_id').eq('student_id', currentUser.id).eq('course_id', courseId);
+    const isEnrolled = myEnrollments && myEnrollments.length > 0;
+    const isLiveCohort = course.course_type === 'Live-Cohort';
+
+    // Build demo video embed
+    let demoVideoHtml = '';
+    if (course.demo_video_url) {
+        let demoEmbed = course.demo_video_url;
+        const isDrive = demoEmbed.includes('drive.google.com');
+        const isYoutube = demoEmbed.includes('youtube.com') || demoEmbed.includes('youtu.be');
+
+        if (isDrive) {
+            demoEmbed = demoEmbed.replace('/view', '/preview').replace('/edit', '/preview');
+        } else if (isYoutube) {
+            let videoId = '';
+            try {
+                if (demoEmbed.includes('youtu.be/')) videoId = demoEmbed.split('youtu.be/')[1].split('?')[0];
+                else if (demoEmbed.includes('youtube.com/watch')) videoId = new URL(demoEmbed).searchParams.get('v');
+                else if (demoEmbed.includes('youtube.com/embed/')) videoId = demoEmbed.split('youtube.com/embed/')[1].split('?')[0];
+            } catch(e) {}
+            if (videoId) demoEmbed = `https://www.youtube.com/embed/${videoId}`;
+        }
+
+        demoVideoHtml = `
+            <div class="mb-6">
+                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Demo / Preview Video</h4>
+                <div class="relative w-full aspect-video bg-gray-900 overflow-hidden border border-gray-200">
+                    <iframe src="${demoEmbed}" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        `;
+    }
+
+    // Cohort schedule info
+    let scheduleHtml = '';
+    if (isLiveCohort) {
+        const days = course.cohort_days?.join(', ') || 'Not set';
+        const startTime = course.start_time?.slice(0, 5) || '--:--';
+        const endTime = course.end_time?.slice(0, 5) || '--:--';
+        scheduleHtml = `
+            <div class="mb-6">
+                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Live Class Schedule</h4>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <div class="bg-emerald-50 border border-emerald-100 px-4 py-2.5 flex items-center gap-2">
+                        <i data-lucide="calendar" class="w-4 h-4 text-emerald-600"></i>
+                        <span class="text-sm font-bold text-emerald-700">${days}</span>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-100 px-4 py-2.5 flex items-center gap-2">
+                        <i data-lucide="clock" class="w-4 h-4 text-blue-600"></i>
+                        <span class="text-sm font-bold text-blue-700">${startTime} - ${endTime}</span>
+                    </div>
+                    <div class="bg-purple-50 border border-purple-100 px-4 py-2.5 flex items-center gap-2">
+                        <i data-lucide="users" class="w-4 h-4 text-purple-600"></i>
+                        <span class="text-sm font-bold text-purple-700">Live Group Sessions</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    const btnAction = isEnrolled
+        ? `window.closeCourseDetail(); window.viewCourseContent('${course.id}')`
+        : `window.closeCourseDetail(); window.enrollCourse('${course.id}', '${course.price}')`;
+    const btnText = isEnrolled ? 'Continue Learning' : `Enrol Now — ₹${course.price || 0}`;
+    const btnClass = isEnrolled
+        ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+        : 'bg-gray-900 text-white hover:bg-emerald-600 shadow-lg shadow-gray-200';
+
+    modal.innerHTML = `
+        <div class="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl animate-fadeIn" style="border-radius: 0 !important;">
+            <!-- Thumbnail -->
+            <div class="relative h-56 overflow-hidden">
+                <img src="${getThumbnailUrl(course.thumbnail_url)}" class="w-full h-full object-cover">
+                <div class="absolute top-4 left-4">
+                    <span class="${course.course_type === 'Self-Paced' ? 'badge-self' : 'badge-cohort'}">${course.course_type}</span>
+                </div>
+                <button onclick="window.closeCourseDetail()" class="absolute top-4 right-4 w-10 h-10 bg-white/90 flex items-center justify-center text-gray-600 hover:text-gray-900 transition shadow">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <!-- Content -->
+            <div class="p-8">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${course.profiles?.first_name} ${course.profiles?.last_name}</span>
+                    <span class="text-gray-200">•</span>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${course.modules?.[0]?.count || 0} Modules</span>
+                </div>
+                <h2 class="text-2xl font-black text-gray-900 mb-4 leading-tight">${course.title}</h2>
+                
+                <!-- Full Description -->
+                <div class="mb-6">
+                    <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">About This Course</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">${course.description || 'No description provided.'}</p>
+                </div>
+
+                ${scheduleHtml}
+                ${demoVideoHtml}
+
+                <!-- Footer -->
+                <div class="flex items-center justify-between pt-6 border-t border-gray-100">
+                    <div>
+                        <span class="text-3xl font-black text-emerald-600">₹${course.price || 0}</span>
+                        ${course.price > 0 ? '<p class="text-[10px] text-gray-400 mt-0.5">One-time payment</p>' : '<p class="text-[10px] text-emerald-500 font-bold mt-0.5">FREE</p>'}
+                    </div>
+                    <button onclick="${btnAction}" class="px-8 py-3.5 font-bold text-sm transition ${btnClass}">
+                        ${btnText}
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    lucide.createIcons();
+};
+
+window.closeCourseDetail = () => {
+    const modal = document.getElementById('course-detail-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    modal.innerHTML = '';
+};
+
 async function loadAchievements() {
     const grid = document.getElementById('achievements-grid');
     grid.innerHTML = '<div class="col-span-full py-12 text-center text-gray-400">Loading your wins...</div>';
@@ -471,10 +680,10 @@ async function loadAchievements() {
                     <h3 class="text-base font-bold text-gray-900 mb-2 leading-tight">${c.title}</h3>
                     <p class="text-[10px] text-gray-400 font-bold uppercase mb-4 tracking-tighter">Completed on ${date}</p>
                     
-                    <div class="flex items-center gap-2 mb-6 bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
+                    ${c.demo_video_url ? `<div class="flex items-center gap-2 mb-6 bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
                         <i data-lucide="external-link" class="w-4 h-4 text-emerald-600"></i>
                         <a href="${c.demo_video_url}" target="_blank" class="text-[11px] font-bold text-emerald-700 hover:underline">Watch Course Demo</a>
-                    </div>
+                    </div>` : ''}
 
                     <button onclick="window.viewCourseContent('${c.id}')" class="w-full bg-emerald-600 text-white py-3 rounded-2xl text-xs font-bold hover:bg-emerald-700 transition shadow-lg shadow-emerald-100 flex items-center justify-center gap-2">
                         <i data-lucide="refresh-ccw" class="w-3 h-3"></i>

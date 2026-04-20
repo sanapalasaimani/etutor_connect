@@ -74,9 +74,13 @@ function initUI() {
         });
     });
 
-    // Restore state on load
+    // Restore state on load (Hash takes precedence, then localStorage)
+    const hash = window.location.hash.replace('#', '');
     const savedTab = localStorage.getItem('adminActiveTab');
-    if (savedTab && document.getElementById(savedTab)) {
+    
+    if (hash && document.getElementById(`section-${hash}`)) {
+        setActiveSection(`section-${hash}`);
+    } else if (savedTab && document.getElementById(savedTab)) {
         setActiveSection(savedTab);
     } else {
         setActiveSection('section-overview'); // default
@@ -101,6 +105,14 @@ function initUI() {
             window.location.href = '/login.html';
         });
     });
+
+    // Users Search
+    const usersSearch = document.getElementById('users-search-input');
+    if (usersSearch) {
+        usersSearch.addEventListener('input', () => {
+            loadUsers(currentUserTab);
+        });
+    }
 }
 
 // ─── Dashboard Stats ──────────────────────────────────────────────────────────
@@ -112,7 +124,7 @@ async function loadDashboardStats() {
         .from('tutor_profiles').select('*', { count: 'exact', head: true }).eq('status', 'APPROVED');
 
     const { count: bookingsCount } = await supabase
-        .from('bookings').select('*', { count: 'exact', head: true });
+        .from('payments').select('*', { count: 'exact', head: true });
 
     const { data: payments } = await supabase.from('payments').select('platform_fee');
     const totalRevenue = payments
@@ -182,12 +194,24 @@ async function loadUsers(role) {
 
     listEl.innerHTML = '';
 
-    if (profiles.length === 0) {
+    const searchQuery = document.getElementById('users-search-input')?.value.toLowerCase().trim() || '';
+    let filteredProfiles = profiles;
+    
+    if (searchQuery) {
+        filteredProfiles = profiles.filter(user => {
+            const fullName = `${user.first_name || ''} ${user.last_name || ''}`.toLowerCase();
+            const email = (user.email || '').toLowerCase();
+            return fullName.includes(searchQuery) || email.includes(searchQuery);
+        });
+    }
+
+    if (filteredProfiles.length === 0) {
+        listEl.innerHTML = '';
         if (emptyEl) emptyEl.style.display = 'block';
         return;
     }
 
-    profiles.forEach(user => {
+    filteredProfiles.forEach(user => {
         const tr = document.createElement('tr');
         const joined = user.created_at
             ? new Date(user.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -412,26 +436,25 @@ async function loadPendingTutors() {
                         <div style="font-weight:600; color:#1e293b;">${tutor.profiles?.first_name || 'N/A'} ${tutor.profiles?.last_name || ''}</div>
                         <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">${tutor.headline || 'No Headline'}</div>
                         <div style="font-size:0.75rem; color:#059669; font-weight:500; text-transform:capitalize; margin-top:2px;">${tutor.category}</div>
-                        ${tutor.linkedin && tutor.linkedin !== 'NA' ? `<a href="${tutor.linkedin}" target="_blank" style="font-size:0.75rem; color:#3b82f6; text-decoration:none;">LinkedIn / Rev</a>` : `<span style="font-size:0.75rem; color:#94a3b8;">No Link</span>`}
                     </div>
                 </div>
             </td>
             <td>
-                <div style="font-size:0.875rem; color:#475569; max-width:250px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;" title="${tutor.bio}">
+                <div style="font-size:0.875rem; color:#475569; max-width:250px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="${tutor.bio}">
                     ${tutor.bio || '—'}
                 </div>
             </td>
             <td>
                 <div style="display: flex; gap: 8px; flex-wrap:wrap;">
-                    <button class="btn-sm btn-success" style="font-size:11px;" onclick="openDocumentModal('${tutor.video_url || ''}', 'Intro Video')">Video</button>
-                    <button class="btn-sm btn-success" style="background:#6366f1; font-size:11px;" onclick="openDocumentModal('${tutor.certs_url || ''}', 'Certificates')">Certs</button>
+                    <button class="btn-sm btn-success" style="font-size:11px;" onclick="openDocumentModal('${tutor.video_url || ''}', 'Intro Video')">Intro Video</button>
+                    ${tutor.linkedin && tutor.linkedin !== 'NA' ? `<a href="${tutor.linkedin}" target="_blank" class="btn-sm" style="background:#0a66c2; font-size:11px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">LinkedIn</a>` : ''}
                 </div>
             </td>
             <td>
-                <div style="display: flex; gap: 8px;">
-                    <button class="btn btn-sm btn-success" onclick="reviewTutor('${tutor.user_id}', 'APPROVED')">Approve</button>
-                    <button class="btn btn-sm btn-danger" onclick="reviewTutor('${tutor.user_id}', 'REJECTED')">Reject</button>
-                </div>
+                <a href="tutor-review.html?user_id=${tutor.user_id}" class="btn btn-sm btn-success" style="background:var(--primary-600); text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
+                    <i data-lucide="eye" style="width:14px; height:14px;"></i>
+                    Review Application
+                </a>
             </td>
         `;
         listEl.appendChild(tr);

@@ -43,10 +43,34 @@
     <div class="dashboard-container">
         <!-- Re-using Admin Sidebar Structure -->
         <aside class="sidebar">
-            <div class="sidebar-header"><a href="index.html" class="logo"><div class="logo-icon"><i data-lucide="shield"></i></div><span>E-Tutor Admin</span></a></div>
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon"><i data-lucide="shield"></i></div>
+                    <span>Admin Panel</span>
+                </a>
+            </div>
             <nav class="sidebar-nav">
-                <a href="index.html" class="nav-link"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-                <a href="#" class="nav-link active"><i data-lucide="users"></i><span>Tutor Approvals</span></a>
+                <a href="index.html" class="nav-link">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="tutor-approvals.html" class="nav-link active">
+                    <i data-lucide="user-check"></i>
+                    <span>Tutor Approvals</span>
+                </a>
+                <a href="index.html#manage-users" class="nav-link">
+                    <i data-lucide="users"></i>
+                    <span>Manage Users</span>
+                </a>
+                <a href="index.html#payments" class="nav-link">
+                    <i data-lucide="credit-card"></i>
+                    <span>Payments</span>
+                </a>
+                <div class="dropdown-divider" style="margin-top: auto;"></div>
+                <a href="#" class="nav-link logout-btn" style="color: #ef4444;">
+                    <i data-lucide="log-out"></i>
+                    <span>Logout</span>
+                </a>
             </nav>
         </aside>
 
@@ -54,53 +78,80 @@
             <div class="content-wrapper">
                 <div class="page-header review-header">
                     <div>
-                        <a href="#" class="btn btn-outline" style="margin-bottom: 1rem; width: fit-content;"><i data-lucide="arrow-left"></i> Back to List</a>
-                        <h1 class="page-title">Application: John Doe</h1>
-                        <p class="page-subtitle">Submitted on: Oct 24, 2026 &nbsp;&bull;&nbsp; <span class="badge">Pending</span></p>
+                        <a href="tutor-approvals.html" class="btn btn-outline" style="margin-bottom: 1rem; width: fit-content;"><i data-lucide="arrow-left"></i> Back to Approvals</a>
+                        <h1 class="page-title" id="display-name">Loading Application...</h1>
+                        <p class="page-subtitle">Submitted on: <span id="display-date">—</span> &nbsp;&bull;&nbsp; <span id="display-status-badge"></span></p>
                     </div>
-                    <div style="display: flex; gap: 1rem;">
-                        <button class="btn btn-warning" id="btn-request"><i data-lucide="message-square"></i> Request Revision</button>
-                        <button class="btn btn-danger" id="btn-reject"><i data-lucide="x"></i> Reject</button>
-                        <button class="btn btn-success" id="btn-approve"><i data-lucide="check"></i> Approve</button>
+                    <div style="display: flex; gap: 1rem;" id="action-buttons">
+                        <button class="btn btn-warning" onclick="openActionModal('REVISION_REQUESTED')"><i data-lucide="message-square"></i> Request Revision</button>
+                        <button class="btn btn-danger" onclick="openActionModal('REJECTED')"><i data-lucide="x"></i> Reject</button>
+                        <button class="btn btn-success" onclick="updateTutorStatus('APPROVED')"><i data-lucide="check"></i> Approve Tutor</button>
                     </div>
                 </div>
 
                 <div class="detail-panel">
                     <div class="info-grid">
                         <div class="left-col">
+                            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--gray-900); display: flex; align-items: center; gap: 0.5rem;">
+                                <i data-lucide="user" style="width: 20px;"></i> Professional Background
+                            </h3>
                             <div class="info-group">
-                                <div class="info-label">Full Name</div>
-                                <div class="info-value">John Doe</div>
+                                <div class="info-label">Current Headline</div>
+                                <div class="info-value" id="d-headline">—</div>
                             </div>
                             <div class="info-group">
-                                <div class="info-label">Email Address</div>
-                                <div class="info-value">john.doe@example.com</div>
+                                <div class="info-label">Expertise Category</div>
+                                <div class="info-value" id="d-category">—</div>
                             </div>
                             <div class="info-group">
-                                <div class="info-label">Primary Subjects</div>
-                                <div class="info-value">Advanced Mathematics, Physics</div>
+                                <div class="info-label">Biography / About</div>
+                                <div class="info-value" id="d-bio" style="line-height: 1.6; background: var(--gray-50); padding: 1rem; border-radius: 8px;">—</div>
                             </div>
-                            <div class="info-group">
-                                <div class="info-label">Professional Experience</div>
-                                <div class="info-value" style="line-height: 1.6;">
-                                    5 years teaching high-school level Calculus and AP Physics. 
-                                    Master's degree in Applied Mathematics from University X.
+                            
+                            <h3 style="font-size: 1.1rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1.5rem; color: var(--gray-900); display: flex; align-items: center; gap: 0.5rem;">
+                                <i data-lucide="credit-card" style="width: 20px;"></i> Payout & Bank Information
+                            </h3>
+                            <div class="grid grid-cols-2 gap-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="info-group">
+                                    <div class="info-label">Account Holder Name</div>
+                                    <div class="info-value" id="d-bank-name">—</div>
                                 </div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label">Attached Certificates</div>
-                                <div class="info-value">
-                                    <a href="#" style="color: var(--primary-600); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
-                                        <i data-lucide="file-text"></i> BSc_Math_Certificate.pdf
-                                    </a>
+                                <div class="info-group">
+                                    <div class="info-label">Account Number</div>
+                                    <div class="info-value" id="d-acc-no" style="font-family: monospace;">—</div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label">IFSC Code</div>
+                                    <div class="info-value" id="d-ifsc" style="font-family: monospace;">—</div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label">Bank Branch</div>
+                                    <div class="info-value" id="d-branch">—</div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="right-col">
+                            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--gray-900); display: flex; align-items: center; gap: 0.5rem;">
+                                <i data-lucide="play-circle" style="width: 20px;"></i> Introduction Video
+                            </h3>
+                            <div class="vid-container" id="video-wrapper">
+                                <p style="color: var(--gray-400); font-size: 0.875rem;">Loading Video...</p>
+                            </div>
+
+                            <h3 style="font-size: 1.1rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1.5rem; color: var(--gray-900); display: flex; align-items: center; gap: 0.5rem;">
+                                <i data-lucide="link" style="width: 20px;"></i> Verification Links
+                            </h3>
                             <div class="info-group">
-                                <div class="info-label">Video Introduction</div>
-                                <div class="vid-container">
-                                    <i data-lucide="play-circle" style="width: 48px; height: 48px; opacity: 0.8; cursor: pointer;"></i>
+                                <div class="info-label">Certificates & Achievements</div>
+                                <div id="d-certs-btn">
+                                    <p style="color: var(--gray-400);">No links provided</p>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label">LinkedIn / Portfolio</div>
+                                <div id="d-linkedin-btn">
+                                    <p style="color: var(--gray-400);">No profile linked</p>
                                 </div>
                             </div>
                         </div>
@@ -110,26 +161,26 @@
         </main>
     </div>
 
-    <!-- Modals -->
+    <!-- Action Modal -->
     <dialog id="action-modal">
-        <h2 class="modal-title" id="modal-title">Take Action</h2>
+        <h2 class="modal-title" id="modal-title">Request Revision</h2>
         <form id="action-form">
             <div class="form-group" id="reason-group" style="display: none;">
-                <label>Reason for Rejection</label>
+                <label>Primary Rejection Reason</label>
                 <select class="form-control" id="reject-reason">
-                    <option>Insufficient Experience</option>
-                    <option>Invalid Certification</option>
-                    <option>Poor Interview/Video Quality</option>
-                    <option>Other</option>
+                    <option value="Incomplete Documentation">Incomplete Documentation</option>
+                    <option value="Invalid Certificates">Invalid Certificates</option>
+                    <option value="Profile Quality Below Standards">Profile Quality Below Standards</option>
+                    <option value="Other">Other</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Admin Comments (sent to Tutor)</label>
-                <textarea class="form-control" rows="4" placeholder="Enter details..." required></textarea>
+                <label>Detailed Message to Tutor</label>
+                <textarea class="form-control" id="action-message" rows="5" placeholder="Specify what needs to be changed or why the application was rejected..." required></textarea>
             </div>
             <div class="modal-actions">
                 <button type="button" class="btn btn-outline" onclick="document.getElementById('action-modal').close()">Cancel</button>
-                <button type="submit" class="btn btn-success" id="modal-submit-btn">Confirm</button>
+                <button type="submit" class="btn btn-primary" id="modal-submit-btn">Send Message</button>
             </div>
         </form>
     </dialog>
@@ -138,51 +189,161 @@
         import { supabase } from '../src/supabase.js';
         lucide.createIcons();
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id');
+
         const modal = document.getElementById('action-modal');
         const modalTitle = document.getElementById('modal-title');
         const reasonGroup = document.getElementById('reason-group');
         const submitBtn = document.getElementById('modal-submit-btn');
+        let pendingStatus = '';
 
-        let currentAction = '';
-
-        // API stub function
-        async function updateTutorStatus(tutorId, status, msg) {
-            console.log(`Setting tutor ${tutorId} to ${status}. Msg: ${msg}`);
-            // await supabase.from('tutor_applications').update({ status, admin_feedback: msg }).eq('id', tutorId);
-            alert(`Tutor status successfully updated to: ${status}`);
-            window.location.reload();
+        if (!userId) {
+            alert('No tutor selected for review.');
+            window.location.href = 'tutor-approvals.html';
         }
 
-        document.getElementById('btn-approve').addEventListener('click', () => {
-            if(confirm("Approve tutor and send Welcome email?")) {
-                updateTutorStatus(1, 'approved', 'Welcome aboard!');
+        async function initReview() {
+            const { data: tutor, error } = await supabase
+                .from('tutor_profiles')
+                .select('*, profiles:user_id(email, first_name, last_name)')
+                .eq('user_id', userId)
+                .single();
+
+            if (error || !tutor) {
+                console.error(error);
+                alert('Tutor profile not found.');
+                window.location.href = 'tutor-approvals.html';
+                return;
             }
-        });
 
-        document.getElementById('btn-request').addEventListener('click', () => {
-            currentAction = 'pending';
-            modalTitle.textContent = "Request Revision";
-            reasonGroup.style.display = 'none';
-            submitBtn.className = 'btn btn-warning';
-            submitBtn.textContent = 'Send Request';
+            // Populating UI
+            const fullName = `${tutor.profiles.first_name} ${tutor.profiles.last_name}`;
+            document.getElementById('display-name').textContent = `Application: ${fullName}`;
+            document.getElementById('display-date').textContent = new Date(tutor.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            const badge = document.getElementById('display-status-badge');
+            badge.textContent = tutor.status;
+            badge.className = `badge badge-${tutor.status.toLowerCase()}`;
+
+            document.getElementById('d-headline').textContent = tutor.headline || '—';
+            document.getElementById('d-category').textContent = tutor.category || '—';
+            document.getElementById('d-bio').textContent = tutor.bio || '—';
+
+            // Payouts
+            document.getElementById('d-bank-name').textContent = tutor.payout_bank_name || '—';
+            document.getElementById('d-acc-no').textContent = tutor.payout_account_no || '—';
+            document.getElementById('d-ifsc').textContent = tutor.payout_ifsc || '—';
+            document.getElementById('d-branch').textContent = tutor.payout_branch || '—';
+
+            // Video handling
+            if (tutor.video_url) {
+                let embedUrl = tutor.video_url;
+                if (embedUrl.includes('drive.google.com') && embedUrl.includes('/view')) {
+                    embedUrl = embedUrl.replace('/view', '/preview');
+                }
+                document.getElementById('video-wrapper').innerHTML = `
+                    <iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width:100%;height:100%;border:none;border-radius:12px;"></iframe>
+                `;
+            } else {
+                document.getElementById('video-wrapper').innerHTML = `<p style="padding:2rem;color:var(--gray-400);">No intro video uploaded</p>`;
+            }
+
+            // Links
+            if (tutor.certs_url) {
+                document.getElementById('d-certs-btn').innerHTML = `
+                    <a href="${tutor.certs_url}" target="_blank" class="btn btn-outline" style="width:100%; justify-content:center; color:var(--primary-600);">
+                        <i data-lucide="external-link"></i> View Documentation Bundle
+                    </a>
+                `;
+            }
+            if (tutor.linkedin && tutor.linkedin !== 'NA') {
+                document.getElementById('d-linkedin-btn').innerHTML = `
+                    <a href="${tutor.linkedin}" target="_blank" class="btn btn-outline" style="width:100%; justify-content:center; color:#0a66c2;">
+                        <i data-lucide="linkedin"></i> View Professional Profile
+                    </a>
+                `;
+            }
+
+            lucide.createIcons();
+        }
+
+        window.openActionModal = function(status) {
+            pendingStatus = status;
+            modalTitle.textContent = status === 'REJECTED' ? 'Reject Application' : 'Request Revision';
+            reasonGroup.style.display = status === 'REJECTED' ? 'block' : 'none';
+            submitBtn.className = status === 'REJECTED' ? 'btn btn-danger' : 'btn btn-warning';
+            submitBtn.textContent = status === 'REJECTED' ? 'Confirm Rejection' : 'Send Request';
             modal.showModal();
-        });
+        }
 
-        document.getElementById('btn-reject').addEventListener('click', () => {
-            currentAction = 'rejected';
-            modalTitle.textContent = "Reject Application";
-            reasonGroup.style.display = 'block';
-            submitBtn.className = 'btn btn-danger';
-            submitBtn.textContent = 'Confirm Rejection';
-            modal.showModal();
-        });
-
-        document.getElementById('action-form').addEventListener('submit', (e) => {
+        document.getElementById('action-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const msg = e.target.querySelector('textarea').value;
-            updateTutorStatus(1, currentAction, msg);
+            const message = document.getElementById('action-message').value;
+            const reason = document.getElementById('reject-reason').value;
+            
+            const feedback = pendingStatus === 'REJECTED' 
+                ? `REJECTED: ${reason}. Additional Notes: ${message}`
+                : `REVISION: ${message}`;
+
+            await updateTutorStatus(pendingStatus, feedback);
             modal.close();
         });
+
+        window.updateTutorStatus = async function(status, feedback = '') {
+            const confirmMsg = status === 'APPROVED' 
+                ? "Approve this tutor? This will grant them teaching access." 
+                : "Confirm status change?";
+            
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                // 1. Update the tutor profile status
+                const { error: profileError } = await supabase
+                    .from('tutor_profiles')
+                    .update({ 
+                        status: status,
+                        admin_feedback: feedback 
+                    })
+                    .eq('user_id', userId);
+
+                if (profileError) throw profileError;
+
+                // 2. Also update the main profile role to 'tutor' if approved (in case it were 'student')
+                if (status === 'APPROVED') {
+                    await supabase.from('profiles').update({ role: 'tutor' }).eq('id', userId);
+                }
+
+                // 3. Create a notification for the tutor
+                let notifyTitle = '';
+                let notifyMsg = '';
+
+                if (status === 'APPROVED') {
+                    notifyTitle = 'Application Approved! 🎉';
+                    notifyMsg = 'Congratulations! Your tutor application has been approved. You can now start creating courses and hosting sessions.';
+                } else if (status === 'REJECTED') {
+                    notifyTitle = 'Application Status Update';
+                    notifyMsg = `Your tutor application was not approved at this time. ${feedback}`;
+                } else {
+                    notifyTitle = 'Revision Requested';
+                    notifyMsg = `The admin has requested some changes to your profile. Feedback: ${feedback}`;
+                }
+
+                await supabase.from('notifications').insert({
+                    user_id: userId,
+                    title: notifyTitle,
+                    message: notifyMsg,
+                    is_read: false
+                });
+
+                alert(`Status successfully updated to ${status}`);
+                window.location.href = 'tutor-approvals.html';
+            } catch (err) {
+                alert('Update failed: ' + err.message);
+            }
+        }
+
+        initReview();
     </script>
 </body>
 </html>

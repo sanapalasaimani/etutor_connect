@@ -380,7 +380,7 @@
                 const photoSrc  = t.profile_photo_url || '../src/assets/default-avatar.png';
 
                 return `
-                <div class="tutor-card" onclick="showTutorDetails('${t.id}')">
+                <div class="tutor-card" onclick="window.location.href='tutor-review.html?user_id=${t.user_id}'">
                     <div class="tutor-header">
                         <img src="${photoSrc}" class="tutor-avatar" onerror="this.src='../src/assets/default-avatar.png'" alt="${firstName}">
                         <div class="tutor-info">
@@ -396,12 +396,11 @@
                         <button class="link-btn" onclick="event.stopPropagation(); viewMedia('${t.certs_url}', 'Certificates')">
                             <i data-lucide="file-text"></i> Certificates
                         </button>
-                        ${t.linkedin && t.linkedin !== 'NA' ? `
-                            <button class="link-btn" onclick="event.stopPropagation(); window.open('${t.linkedin}', '_blank')">
-                                <i data-lucide="external-link"></i> LinkedIn
-                            </button>` : ''}
                     </div>
-                    <span class="badge badge-${status.toLowerCase()}">${status}</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem;">
+                        <span class="badge badge-${status.toLowerCase()}">${status}</span>
+                        <span style="font-size:0.75rem; color:var(--primary-600); font-weight:600;">View Application →</span>
+                    </div>
                 </div>`;
             }).join('');
 
