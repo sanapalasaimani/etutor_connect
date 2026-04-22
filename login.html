@@ -200,37 +200,47 @@
         }
       })
 
-      // NEW: Handle redirect from OAuth or Check existing session
+      // Handle auth state changes (Login, Logout, etc.)
+      supabase.auth.onAuthStateChange(async (event, session) => {
+          if (event === 'SIGNED_IN' && session) {
+              await checkSessionAndRedirect();
+          }
+      });
+
       async function checkSessionAndRedirect() {
-        const { data: { session }, error } = await supabase.auth.getSession()
+        const { data: { session } } = await supabase.auth.getSession()
         if (session) {
             let role = session.user.user_metadata?.role;
             let isBlocked = false;
-            let profile = null;
 
-            // Always fetch from profiles for latest data
-            const { data: profileData } = await supabase
+            const { data: profile } = await supabase
                 .from('profiles')
                 .select('role, is_blocked')
                 .eq('id', session.user.id)
                 .single();
-            if (profileData) {
-                profile = profileData;
+            
+            if (profile) {
                 if (!role) role = profile.role;
-                isBlocked = !!profile.is_blocked; // use truthy check
+                isBlocked = profile.is_blocked;
             }
 
-            // If blocked — redirect to dedicated blocked page
+            console.log('Login logic - Role:', role, 'Blocked:', isBlocked);
+
             if (isBlocked) {
                 window.location.href = '/blocked.html';
                 return;
             }
 
-            if (role === 'admin') window.location.href = '/admin';
-            else if (role === 'tutor') window.location.href = '/tutor';
-            else if (role === 'student') window.location.href = '/student';
+            if (role === 'admin') window.location.href = '/admin/';
+            else if (role === 'tutor') window.location.href = '/tutor/';
+            else {
+                // Default to student if no role is found or role is 'student'
+                window.location.href = '/student/';
+            }
         }
       }
+
+      // Initial check
       checkSessionAndRedirect();
 
       // 4. Standard Email/Password Sign-In

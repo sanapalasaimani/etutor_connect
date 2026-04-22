@@ -336,6 +336,8 @@
             console.log("Starting signup for:", email, "as", role);
             
             // 1. Register user in Supabase Auth
+            // The metadata passed here will be picked up by the 'on_auth_user_created' 
+            // trigger to automatically create the record in public.profiles table.
             const { data, error: authError } = await supabase.auth.signUp({
                 email,
                 password,
@@ -350,7 +352,6 @@
             
             if (authError) {
                 console.error("Auth Error:", authError);
-                // Handle specific common Supabase errors
                 if (authError.status === 429) {
                     throw new Error("Too many requests. Please wait a few minutes before trying again.");
                 }
@@ -366,27 +367,15 @@
             
             console.log("Auth successful, User ID:", data.user.id);
             
-            // 2. Fallback Profile Insert (If trigger doesn't exist)
-            // We attempt to insert manually. If it fails due to RLS, that's okay (as it means trigger likely handled it).
-            const { error: profileError } = await supabase.from('profiles').upsert({
-                id: data.user.id,
-                email: email,
-                first_name: firstName,
-                last_name: lastName,
-                role: role,
-                is_blocked: false
-            });
-            
-            if (profileError) {
-                console.warn("Soft warning: Profile table sync failed.", profileError.message);
-            }
+            // Note: We don't manually insert into 'profiles' here anymore because 
+            // the database trigger 'on_auth_user_created' handles it automatically.
 
-            // 3. Tutor-specific data (Level 2)
+            // 2. Tutor-specific data (Level 2)
             if (role === 'tutor') {
                 const headline = document.getElementById('headline').value;
                 const bio = document.getElementById('bio').value;
                 const category = document.getElementById('category').value;
-                const linkedin = document.getElementById('linkedin').value || '';
+                const linkedin = document.getElementById('linkedin').value || 'NA';
                 const videoUrl = document.getElementById('video_url').value;
                 const certsUrl = document.getElementById('certs_url').value;
                 const profilePhotoFile = document.getElementById('profile_photo').files[0];
@@ -394,33 +383,33 @@
                 // Upload profile photo
                 let profilePhotoUrl = '';
                 if (profilePhotoFile) {
-                    try {
-                        const fileExt = profilePhotoFile.name.split('.').pop();
-                        const fileName = `${data.user.id}_${Date.now()}.${fileExt}`;
-                        
-                        const { data: uploadData, error: uploadError } = await supabase.storage
-                            .from('profile-photos')
-                            .upload(fileName, profilePhotoFile, {
-                                cacheControl: '3600',
-                                upsert: false
-                            });
-                        
-                        if (uploadError) {
-                            console.error("Storage Error:", uploadError);
-                            throw new Error(`Profile photo upload failed: ${uploadError.message}. Ensure the 'profile-photos' bucket exists and is set to Public.`);
-                        }
-                        
-                        const { data: { publicUrl } } = supabase.storage
-                            .from('profile-photos')
-                            .getPublicUrl(fileName);
-                        
-                        profilePhotoUrl = publicUrl;
-                    } catch (uploadErr) {
-                        throw new Error(uploadErr.message);
+                    const fileExt = profilePhotoFile.name.split('.').pop();
+                    const fileName = `${data.user.id}_${Date.now()}.${fileExt}`;
+                    
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('profile-photos')
+                        .upload(fileName, profilePhotoFile, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+                    
+                    if (uploadError) {
+                        console.error("Storage Error:", uploadError);
+                        throw new Error(`Profile photo upload failed: ${uploadError.message}`);
                     }
+                    
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('profile-photos')
+                        .getPublicUrl(fileName);
+                    
+                    profilePhotoUrl = publicUrl;
                 }
 
                 // Insert into tutor_profiles
+                // We wait a tiny bit to ensure the trigger-based profile creation has completed 
+                // and is visible to the current transaction/connection if confirmation is off.
+                // If confirmation is ON, auth.uid() won't work yet, but these tables have 
+                // public INSERT policies to allow signup flows.
                 const { error: dbError } = await supabase.from('tutor_profiles').insert({
                     user_id: data.user.id,
                     headline, 
@@ -435,12 +424,13 @@
                 
                 if (dbError) {
                     console.error("DB Error:", dbError);
-                    throw new Error("Failed to save tutor profile: " + dbError.message + ". Please ensure your database tables are correctly configured.");
+                    throw new Error("Tutor profile creation failed: " + dbError.message);
                 }
             }
             
-            alert('Success! Your account has been created. If email verification is enabled, please check your inbox before logging in.')
+            alert('Success! Your account has been created. Please check your email for a verification link if required, then sign in.')
             window.location.href = '/login.html'
+            
             
         } catch (err) {
             console.error("Signup process failed:", err);
