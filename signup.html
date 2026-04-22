@@ -202,13 +202,21 @@
       }
     </style>
 
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="./src/main.js"></script>
     <script type="module">
-      import { supabase } from '/src/supabase.js'
+      import { supabase } from './src/supabase.js'
 
       const form = document.getElementById('signup-form')
       const btn = document.getElementById('submit-btn')
       const errorMsg = document.getElementById('error-message')
+
+      // Pre-flight check – warn if config is missing
+      if (!supabase) {
+          console.error("Supabase client failed to initialize. Check config.");
+          errorMsg.textContent = "System configuration error. Please contact support.";
+          errorMsg.classList.remove('hidden');
+      }
+
       
       // Dynamic Field Toggling based on Role
       const roleRadios = document.querySelectorAll('input[name="role"]');
